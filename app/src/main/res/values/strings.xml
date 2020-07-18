@@ -17,6 +17,7 @@
     <string name="post_title">Post title</string>
     <string name="post_body">Post body</string>
     <string name="delete_post">Delete post</string>
+    <string name="my_posts">My Posts</string>
 
     <string-array name="category_array">
         <item>Books for Sale</item>
