@@ -14,4 +14,24 @@
     <string name="username_hint_text">Username</string>
     <string name="password_hint_text">Password</string>
     <string name="login">Login</string>
+    <string name="post_title">Post title</string>
+    <string name="post_body">Post body</string>
+    <string name="delete_post">Delete post</string>
+
+    <string-array name="category_array">
+        <item>Books for Sale</item>
+        <item>Lofts for Sale</item>
+        <item>Furniture for Sale</item>
+        <item>Cars/Bikes for Sale</item>
+        <item>Electronics for Sale</item>
+        <item>General for Sale</item>
+        <item>Ride Share</item>
+        <item>Housing</item>
+        <item>Services (Tutoring)</item>
+        <item>Wanted</item>
+        <item>Lost &amp; Found</item>
+        <item>Announcements</item>
+        <item>Community</item>
+    </string-array>
+
 </resources>
