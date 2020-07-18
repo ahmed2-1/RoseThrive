@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:orientation="vertical"
+    android:padding="16dp"
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/notifications_settings_title"
+        android:textStyle="bold"
+        android:textSize="24dp"
+        android:textColor="@android:color/black"
+        android:layout_marginBottom="16dp" />
+
+    <Switch
+        android:id="@+id/new_post_added_switch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:text="New post added"
+        android:textSize="16sp"
+        android:layout_marginVertical="8dp" />
+
+    <Switch
+        android:id="@+id/new_reply_switch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:text="New reply to your post"
+        android:textSize="16sp"
+        android:layout_marginVertical="8dp" />
+
+    <Switch
+        android:id="@+id/new_reply_to_sub_switch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:text="New reply to subscribed post"
+        android:textSize="16sp"
+        android:layout_marginVertical="8dp" />
+
+    <Switch
+        android:id="@+id/edit_to_sub_switch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:text="Edit to subscribed post"
+        android:textSize="16sp"
+        android:layout_marginVertical="8dp" />
+
+    <Switch
+        android:id="@+id/edit_to_last_item_switch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:text="Edit to item last edited by you"
+        android:textSize="16sp"
+        android:layout_marginVertical="8dp" />
+
+    <Switch
+        android:id="@+id/deleted_switch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:text="Subscribed post deleted"
+        android:textSize="16sp"
+        android:layout_marginVertical="8dp" />
+
+</LinearLayout>
