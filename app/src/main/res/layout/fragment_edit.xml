@@ -11,12 +11,4 @@
         android:id="@+id/main_content"
         layout="@layout/content_post_elements" />
 
-    <Button
-        android:layout_margin="16dp"
-        android:textColor="@android:color/red"
-        android:layout_alignParentBottom="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/delete_post" />
-
 </RelativeLayout>

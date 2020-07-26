@@ -1,10 +1,17 @@
 package com.example.rosethrive
 
+import android.content.Context
+import android.content.DialogInterface
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -17,6 +24,9 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 class ListFragment : Fragment() {
+    private var listener: MainListener? = null
+    private lateinit var adapter: PostAdapter
+
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
@@ -29,10 +39,51 @@ class ListFragment : Fragment() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_list, container, false)
+        val recyclerView =
+            inflater.inflate(R.layout.fragment_list, container, false) as RecyclerView
+
+        adapter = PostAdapter(requireContext(), listener)
+
+        adapter.posts = listener?.posts ?: ArrayList<Post>()
+        Log.d("RoseThrive", adapter.posts.toString())
+        adapter.notifyDataSetChanged()
+
+        recyclerView.adapter = adapter
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        recyclerView.setHasFixedSize(true)
+
+        requireActivity().findViewById<FloatingActionButton>(R.id.fab).setOnClickListener { view ->
+            adapter. showAddDialog()
+        }
+
+        return recyclerView
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putParcelableArrayList("posts", adapter.posts)
+        Log.d(Constants.TAG, "Saved")
+        Log.d(Constants.TAG, adapter.posts.toString())
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if(context is MainListener){
+            listener = context
+        }
+        else{
+            throw RuntimeException("$context must implement OnPhotoSelectedListener")
+        }
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        listener = null
     }
 
     companion object {
@@ -47,11 +98,11 @@ class ListFragment : Fragment() {
         // TODO: Rename and change types and number of parameters
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
-                ListFragment().apply {
-                    arguments = Bundle().apply {
-                        putString(ARG_PARAM1, param1)
-                        putString(ARG_PARAM2, param2)
-                    }
+            ListFragment().apply {
+                arguments = Bundle().apply {
+                    putString(ARG_PARAM1, param1)
+                    putString(ARG_PARAM2, param2)
                 }
+            }
     }
 }

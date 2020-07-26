@@ -1,23 +1,32 @@
 package com.example.rosethrive
 
 import android.os.Bundle
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), MainListener {
+
+    var postsImp = ArrayList<Post>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(findViewById(R.id.toolbar))
 
-        findViewById<FloatingActionButton>(R.id.fab).setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()
-        }
+        switchToMainFragment("")
+    }
+
+    private fun switchToLoginFragment() {
+        val ft = supportFragmentManager.beginTransaction()
+        ft.replace(R.id.fragment_container, LoginFragment())
+        ft.commit()
+    }
+
+    private fun switchToMainFragment(uid: String) {
+        val ft = supportFragmentManager.beginTransaction()
+        ft.replace(R.id.fragment_container, ListFragment.newInstance(uid, "1"))
+        ft.commit()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -34,5 +43,25 @@ class MainActivity : AppCompatActivity() {
             R.id.action_settings -> true
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    override var posts: ArrayList<Post>
+        get() = postsImp
+        set(value) {postsImp = value}
+
+    override fun onPostSelected(post: Post) {
+        val viewFragment = ViewPostFragment.newInstance(post)
+        val ft = supportFragmentManager.beginTransaction()
+        ft.replace(R.id.fragment_container, viewFragment)
+        ft.addToBackStack("view")
+        ft.commit()
+    }
+
+    override fun onCreatePostRequest(function: (Post) -> Unit) {
+        val createFragment = CreateFragment.newInstance("", "", function)
+        val ft = supportFragmentManager.beginTransaction()
+        ft.replace(R.id.fragment_container, createFragment)
+        ft.addToBackStack("create")
+        ft.commit()
     }
 }
