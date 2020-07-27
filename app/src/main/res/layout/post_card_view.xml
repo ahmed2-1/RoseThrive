@@ -27,6 +27,7 @@
             android:layout_height="wrap_content"
             android:layout_toEndOf="@id/post_category_indicator"
             android:text="DEFAULT TITLE"
+            android:textSize="16sp"
             android:textColor="@android:color/black"
             android:textStyle="bold" />
 
@@ -37,6 +38,7 @@
             android:layout_below="@id/post_title_text_view"
             android:layout_toEndOf="@id/post_category_indicator"
             android:text="DEFAULT FILLER TEXT"
+            android:textSize="16sp"
             android:textColor="@android:color/darker_gray" />
 
     </RelativeLayout>

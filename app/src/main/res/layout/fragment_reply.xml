@@ -18,6 +18,7 @@
         />
 
     <EditText
+        android:id="@+id/comment_body_edit_text"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:hint="Type reply here"

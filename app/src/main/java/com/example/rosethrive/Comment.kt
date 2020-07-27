@@ -1,3 +1,7 @@
 package com.example.rosethrive
 
-data class Comment(var body:String, var parent:String, var uid:String)
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+
+@Parcelize
+data class Comment(var body:String, var uid:String) : Parcelable

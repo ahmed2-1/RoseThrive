@@ -49,5 +49,7 @@
     </string>
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
     <string name="notifications_settings_title">Receive Notifications for:</string>
+    <string name="my_account">My Account</string>
+    <string name="sign_out">Sign Out</string>
 
 </resources>
