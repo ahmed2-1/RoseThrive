@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "616079781304",
+    "firebase_url": "https://rosethrive-3a1e2.firebaseio.com",
+    "project_id": "rosethrive-3a1e2",
+    "storage_bucket": "rosethrive-3a1e2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:616079781304:android:7181ca82842aa13f2ef34d",
+        "android_client_info": {
+          "package_name": "com.example.rosethrive"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "616079781304-6vc6aac0vs5drq710kjqbkidq5557ur0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCb5Kio9zG3ix0MMMdP9V_DRXkw0HntViA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "616079781304-6vc6aac0vs5drq710kjqbkidq5557ur0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
