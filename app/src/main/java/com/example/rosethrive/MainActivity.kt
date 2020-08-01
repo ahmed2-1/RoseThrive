@@ -47,10 +47,6 @@ class MainActivity : AppCompatActivity(), MainListener {
         }
     }
 
-    override var posts: ArrayList<Post>
-        get() = postsImp
-        set(value) {postsImp = value}
-
     override fun onPostSelected(post: Post) {
         val viewFragment = ViewPostFragment.newInstance(post)
         val ft = supportFragmentManager.beginTransaction()

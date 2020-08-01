@@ -48,10 +48,7 @@ class ListFragment : Fragment() {
             inflater.inflate(R.layout.fragment_list, container, false) as RecyclerView
 
         adapter = PostAdapter(requireContext(), listener)
-
-        adapter.posts = listener?.posts ?: ArrayList<Post>()
-        Log.d("RoseThrive", adapter.posts.toString())
-        adapter.notifyDataSetChanged()
+        adapter.addSnapshotListener()
 
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
