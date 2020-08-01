@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: edu.rosehulman.csse.rosefire:rosefire-android-client:2.1.0@aar">
+    <CLASSES>
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/334c8540972c6cbe3ba5c480adc5e87f/jetified-rosefire-android-client-2.1.0/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/334c8540972c6cbe3ba5c480adc5e87f/jetified-rosefire-android-client-2.1.0/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/334c8540972c6cbe3ba5c480adc5e87f/jetified-rosefire-android-client-2.1.0/res" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

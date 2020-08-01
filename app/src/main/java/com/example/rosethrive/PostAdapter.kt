@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.firestore.*
 import kotlinx.android.synthetic.main.content_post_elements.view.*
 
-class PostAdapter(var context: Context, var listener: MainListener?) :
+class PostAdapter(var context: Context, var listener: MainListener?, val uid: String) :
     RecyclerView.Adapter<PostViewHolder>() {
     var posts = ArrayList<Post>()
 
@@ -92,7 +92,6 @@ class PostAdapter(var context: Context, var listener: MainListener?) :
             val body = view.description_edit_text.text.toString()
             val categoryName = view.category_spinner.selectedItem.toString()
             val category = Category(categoryName, 2)
-            val uid = "TestAdder"
 
             val post = Post(title, body, category, uid)
             add(post)
@@ -121,7 +120,6 @@ class PostAdapter(var context: Context, var listener: MainListener?) :
             val body = view.description_edit_text.text.toString()
             val categoryName = view.category_spinner.selectedItem.toString()
             val category = Category(categoryName, 2)
-            val uid = "TestAdder"
 
             val post = Post(title, body, category, uid)
             edit(position, post)
