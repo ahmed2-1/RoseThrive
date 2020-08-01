@@ -1,26 +1,26 @@
 package com.example.rosethrive
 
-import android.content.DialogInterface
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import kotlinx.android.synthetic.main.content_post_elements.view.*
 import kotlinx.android.synthetic.main.fragment_view_post.view.*
 
+private const val ARG_UID = "uid"
 private const val ARG_POST = "post"
 
-class ViewPostFragment : Fragment() {
+class ViewPostFragment() : Fragment() {
     private var post: Post? = null
+    private lateinit var uid: String
     private lateinit var adapter: CommentAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
+            uid = it.getString(ARG_UID).toString()
             post = it.getParcelable(ARG_POST)
         }
     }
@@ -37,7 +37,8 @@ class ViewPostFragment : Fragment() {
         view.post_body_text_view.text = post?.body
 
         if(post != null) {
-            adapter = CommentAdapter(requireContext(), post!!)
+            adapter = CommentAdapter(uid, requireContext(), post!!)
+            adapter.addSnapshotListener()
         }
 
         val recycler = view.replies_recycler_view
@@ -52,9 +53,10 @@ class ViewPostFragment : Fragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance(post: Post) =
+        fun newInstance(uid : String, post: Post) =
             ViewPostFragment().apply {
                 arguments = Bundle().apply {
+                    putString(ARG_UID, uid)
                     putParcelable(ARG_POST, post)
                 }
             }

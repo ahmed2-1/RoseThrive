@@ -8,6 +8,7 @@ import androidx.core.view.MenuCompat
 
 class MainActivity : AppCompatActivity(), MainListener {
 
+    private val uid: String = "default"
     var postsImp = ArrayList<Post>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,7 +49,7 @@ class MainActivity : AppCompatActivity(), MainListener {
     }
 
     override fun onPostSelected(post: Post) {
-        val viewFragment = ViewPostFragment.newInstance(post)
+        val viewFragment = ViewPostFragment.newInstance(uid, post)
         val ft = supportFragmentManager.beginTransaction()
         ft.replace(R.id.fragment_container, viewFragment)
         ft.addToBackStack("view")
