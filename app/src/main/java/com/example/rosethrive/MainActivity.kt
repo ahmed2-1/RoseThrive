@@ -30,6 +30,7 @@ class MainActivity : AppCompatActivity(), MainListener {
     private fun switchToLoginFragment() {
         val ft = supportFragmentManager.beginTransaction()
         ft.replace(R.id.fragment_container, LoginFragment())
+
         ft.commit()
     }
 
@@ -42,6 +43,7 @@ class MainActivity : AppCompatActivity(), MainListener {
     private fun switchToAccountFragment() {
         val ft = supportFragmentManager.beginTransaction()
         ft.replace(R.id.fragment_container, AccountFragment.newInstance(uid))
+        ft.addToBackStack("account")
         ft.commit()
     }
 
@@ -65,7 +67,6 @@ class MainActivity : AppCompatActivity(), MainListener {
             else -> super.onOptionsItemSelected(item)
         }
     }
-
 
     override fun onPostSelected(post: Post) {
         val viewFragment = ViewPostFragment.newInstance(uid, post)

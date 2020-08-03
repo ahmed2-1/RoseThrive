@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -42,6 +43,7 @@ class ListFragment : Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.setHasFixedSize(true)
 
+        requireActivity().findViewById<FloatingActionButton>(R.id.fab).visibility = View.VISIBLE
         requireActivity().findViewById<FloatingActionButton>(R.id.fab).setOnClickListener { view ->
             adapter. showAddDialog()
         }

@@ -1,12 +1,14 @@
 package com.example.rosethrive
 
-import android.content.Context
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.android.synthetic.main.fragment_login.view.*
+
 
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
@@ -20,6 +22,17 @@ class LoginFragment : Fragment() {
         view.login_button.setOnClickListener {
             (activity as MainActivity)!!.onRosefireLogin()
         }
+        requireActivity().findViewById<FloatingActionButton>(R.id.fab).visibility = View.GONE
         return view
+    }
+
+    override fun onResume() {
+        super.onResume()
+        (activity as AppCompatActivity?)!!.supportActionBar!!.hide()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        (activity as AppCompatActivity?)!!.supportActionBar!!.show()
     }
 }
