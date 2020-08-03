@@ -11,17 +11,21 @@
     android:gravity="center"
     android:padding="16dp">
 
+
     <ImageView
-        android:id="@+id/logo_image_view"
-        android:layout_width="wrap_content"
+        android:id="@+id/imageView"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:src="@tools:sample/avatars"
-        android:layout_marginBottom="250dp"/>
+        android:src="@drawable/rose_logo" />
 
     <Button
 
         android:id="@+id/login_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:drawableTop="@drawable/ic_login_foreground"
+        android:textSize="18sp"
+        android:padding="12dp"
         android:text="@string/login" />
+
 </LinearLayout>
