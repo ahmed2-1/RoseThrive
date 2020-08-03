@@ -10,7 +10,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.firestore.*
 import kotlinx.android.synthetic.main.content_post_elements.view.*
 
-class PostAdapter(var context: Context, var listener: MainListener?, val uid: String) :
+class PostAdapter(
+    var context: Context,
+    var listener: MainListener?,
+    val uid: String,
+    val isAccount: Boolean
+) :
     RecyclerView.Adapter<PostViewHolder>() {
     var posts = ArrayList<Post>()
 
@@ -21,15 +26,18 @@ class PostAdapter(var context: Context, var listener: MainListener?, val uid: St
     private lateinit var listenerRegistration: ListenerRegistration
 
     fun addSnapshotListener() {
-        listenerRegistration = postReference
-            .orderBy(Post.LAST_TOUCHED_KEY, Query.Direction.ASCENDING)
-            .addSnapshotListener { querySnapshot, e ->
-                if (e != null) {
-                    Log.w(Constants.TAG, "listen error", e)
-                } else {
-                    processSnapshotChanges(querySnapshot!!)
-                }
+        val query = if (isAccount) {
+            postReference.orderBy(Post.LAST_TOUCHED_KEY, Query.Direction.ASCENDING).whereEqualTo(Post.UID_KEY, uid)
+        } else {
+            postReference.orderBy(Post.LAST_TOUCHED_KEY, Query.Direction.ASCENDING)
+        }
+        query.addSnapshotListener { querySnapshot, e ->
+            if (e != null) {
+                Log.w(Constants.TAG, "listen error", e)
+            } else {
+                processSnapshotChanges(querySnapshot!!)
             }
+        }
     }
 
     private fun processSnapshotChanges(querySnapshot: QuerySnapshot) {
@@ -78,7 +86,7 @@ class PostAdapter(var context: Context, var listener: MainListener?, val uid: St
         postReference.add(post)
     }
 
-    private fun edit(position:Int, post: Post) {
+    private fun edit(position: Int, post: Post) {
         postReference.document(posts[position].id).set(posts[position])
     }
 
@@ -108,7 +116,7 @@ class PostAdapter(var context: Context, var listener: MainListener?, val uid: St
         view.title_edit_text.setText(posts[position].title)
         view.description_edit_text.setText(posts[position].body)
 
-        val categoryArray=context.resources.getStringArray(R.array.category_array)
+        val categoryArray = context.resources.getStringArray(R.array.category_array)
         val catPos = categoryArray.indexOfFirst {
             it.equals(posts[position].category.name)
         }
@@ -124,13 +132,12 @@ class PostAdapter(var context: Context, var listener: MainListener?, val uid: St
             val post = Post(title, body, category, uid)
             edit(position, post)
         }
-        builder.setNeutralButton(context.resources.getString(R.string.delete_post)){_, _ ->
+        builder.setNeutralButton(context.resources.getString(R.string.delete_post)) { _, _ ->
             postReference.document(posts[position].id).delete()
         }
         builder.setNegativeButton(android.R.string.cancel, null)
         builder.create().show()
     }
-
 
 
 }

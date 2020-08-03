@@ -39,6 +39,12 @@ class MainActivity : AppCompatActivity(), MainListener {
         ft.commit()
     }
 
+    private fun switchToAccountFragment() {
+        val ft = supportFragmentManager.beginTransaction()
+        ft.replace(R.id.fragment_container, AccountFragment.newInstance(uid))
+        ft.commit()
+    }
+
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.menu_main, menu)
@@ -52,9 +58,14 @@ class MainActivity : AppCompatActivity(), MainListener {
         // as you specify a parent activity in AndroidManifest.xml.
         return when (item.itemId) {
             R.id.notif_settings -> true
+            R.id.account_link -> {
+                switchToAccountFragment()
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }
+
 
     override fun onPostSelected(post: Post) {
         val viewFragment = ViewPostFragment.newInstance(uid, post)

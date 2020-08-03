@@ -35,7 +35,7 @@ class ListFragment : Fragment() {
         val recyclerView =
             inflater.inflate(R.layout.fragment_list, container, false) as RecyclerView
 
-        adapter = PostAdapter(requireContext(), listener, uid!!)
+        adapter = PostAdapter(requireContext(), listener, uid!!, false)
         adapter.addSnapshotListener()
 
         recyclerView.adapter = adapter

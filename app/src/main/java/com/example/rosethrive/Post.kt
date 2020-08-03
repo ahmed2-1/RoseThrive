@@ -17,6 +17,7 @@ data class Post(var title:String = "", var body:String = "", var category:Catego
 
     companion object {
         const val LAST_TOUCHED_KEY = "lastTouched"
+        const val UID_KEY = "uid"
 
         fun fromSnapshot(snapshot: DocumentSnapshot): Post {
             val post = snapshot.toObject(Post::class.java)!!
