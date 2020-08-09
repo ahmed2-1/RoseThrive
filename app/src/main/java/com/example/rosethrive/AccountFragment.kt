@@ -11,18 +11,10 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_account.view.*
 
-
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_UID = "uid"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [AccountFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
+
 class AccountFragment : Fragment() {
-    // TODO: Rename and change types of parameters
     private var listener: MainListener? = null
     private var uid: String? = null
     private lateinit var adapter: PostAdapter

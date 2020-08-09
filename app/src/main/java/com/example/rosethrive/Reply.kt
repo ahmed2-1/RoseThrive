@@ -1,6 +1,5 @@
 package com.example.rosethrive
 
-import android.os.Parcel
 import android.os.Parcelable
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentSnapshot
@@ -10,7 +9,7 @@ import com.thoughtbot.expandablerecyclerview.models.ExpandableGroup
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class Comment(var body:String="", var uid:String="") : Parcelable, ExpandableGroup<Reply>(uid, ArrayList<Reply>()) {
+data class Reply(var body:String="", var uid:String="", var parent:String = "") : Parcelable{
     @get:Exclude
     var id = ""
     @ServerTimestamp
