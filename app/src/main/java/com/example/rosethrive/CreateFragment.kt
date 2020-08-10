@@ -38,7 +38,7 @@ class CreateFragment() : Fragment() {
             val postTitle = view.title_edit_text.text.toString()
             val postBody:String = view.description_edit_text.text.toString()
             val categoryName:String = view.category_spinner.selectedItem as String
-            val category = Category(categoryName, 1)
+            val category = Category(categoryName)
             val uid = "TestUser"
             post = Post(postTitle, postBody, category, uid)
         }

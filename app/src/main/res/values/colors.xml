@@ -3,4 +3,17 @@
     <color name="colorPrimary">#800000</color>
     <color name="colorPrimaryDark">#333</color>
     <color name="colorAccent">#800000</color>
+    <color name="colorLoftForSale">#ff7200</color>
+    <color name="colorBooksForSale">#0000FF</color>
+    <color name="colorFurnitureForSale">#5A00AA</color>
+    <color name="colorCarsBikesForSale">#00AA00</color>
+    <color name="colorGeneralForSale">#5F1AE5</color>
+    <color name="colorRideShare">#c1683e</color>
+    <color name="colorHousing">#18883F</color>
+    <color name="colorServicesTutoring">#D179C6</color>
+    <color name="colorWanted">#CC224D</color>
+    <color name="colorLostAndFound">#3E61C1</color>
+    <color name="colorAnnouncements">#70DE21</color>
+    <color name="colorCommunity">#367EC9</color>
+    <color name="colorElectronicsForSale">#00CCDD</color>
 </resources>

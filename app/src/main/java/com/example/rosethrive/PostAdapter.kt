@@ -100,7 +100,7 @@ class PostAdapter(
             val title = view.title_edit_text.text.toString()
             val body = view.description_edit_text.text.toString()
             val categoryName = view.category_spinner.selectedItem.toString()
-            val category = Category(categoryName, 2)
+            val category = Category(categoryName)
 
             val post = Post(title, body, category, uid)
             add(post)
@@ -133,7 +133,7 @@ class PostAdapter(
             val title = view.title_edit_text.text.toString()
             val body = view.description_edit_text.text.toString()
             val categoryName = view.category_spinner.selectedItem.toString()
-            val category = Category(categoryName, 2)
+            val category = Category(categoryName)
             
             targetPost.title = title
             targetPost.body = body

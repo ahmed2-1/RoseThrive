@@ -24,8 +24,7 @@ class MainActivity : AppCompatActivity(), MainListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(findViewById(R.id.toolbar))
-        val categories = this.resources.getStringArray(R.array.category_array)
-        Category.categories = categories.toCollection(ArrayList())
+
         initializeListener()
     }
 
