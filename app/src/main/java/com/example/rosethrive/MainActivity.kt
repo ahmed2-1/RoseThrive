@@ -24,7 +24,31 @@ class MainActivity : AppCompatActivity(), MainListener {
         setContentView(R.layout.activity_main)
         setSupportActionBar(findViewById(R.id.toolbar))
 
-        switchToLoginFragment()
+        initializeListener()
+//        switchToLoginFragment()
+    }
+
+    private fun initializeListener() {
+        authListener = FirebaseAuth.AuthStateListener {
+            val user = it.currentUser
+            Log.d(Constants.TAG, "In auth lis! user = $user")
+
+            if (user != null) {
+                switchToMainFragment(user.uid)
+            } else {
+                switchToLoginFragment()
+            }
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        auth.addAuthStateListener(authListener)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        auth.removeAuthStateListener(authListener)
     }
 
     private fun switchToLoginFragment() {
