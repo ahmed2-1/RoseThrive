@@ -11,20 +11,24 @@ class PostViewHolder: RecyclerView.ViewHolder {
 
     var titleTextView = itemView.post_title_text_view
     var bodyTextView = itemView.post_body_preview_text_view
+    var ownerTextView = itemView.post_owner_text_view
 
     constructor(itemView: View, adapter: PostAdapter, context: Context): super(itemView){
         this.context = context
         itemView.setOnClickListener{
             adapter.selectPostAt(adapterPosition)
         }
+
         itemView.setOnLongClickListener {
             adapter.showEditDialog(adapterPosition)
             true
         }
+
     }
 
     fun bind(post: Post) {
         titleTextView.text = post.title
+        ownerTextView.text = post.uid
         if(post.body.length <= 75){
             bodyTextView.text = post.body
         }

@@ -111,15 +111,20 @@ class PostAdapter(
     }
 
     fun showEditDialog(position: Int) {
+
+        val targetPost = posts[position]
+        if (targetPost.uid != uid)
+            return
+
         val builder = AlertDialog.Builder(context)
         //Set options
         val view = LayoutInflater.from(context).inflate(R.layout.fragment_edit, null, false)
-        view.title_edit_text.setText(posts[position].title)
-        view.description_edit_text.setText(posts[position].body)
+        view.title_edit_text.setText(targetPost.title)
+        view.description_edit_text.setText(targetPost.body)
 
         val categoryArray = context.resources.getStringArray(R.array.category_array)
         val catPos = categoryArray.indexOfFirst {
-            it.equals(posts[position].category.name)
+            it == targetPost.category.name
         }
         view.category_spinner.setSelection(catPos)
 
@@ -129,12 +134,15 @@ class PostAdapter(
             val body = view.description_edit_text.text.toString()
             val categoryName = view.category_spinner.selectedItem.toString()
             val category = Category(categoryName, 2)
+            
+            targetPost.title = title
+            targetPost.body = body
+            targetPost.category = category
 
-            val post = Post(title, body, category, uid)
-            edit(position, post)
+            edit(position, targetPost)
         }
         builder.setNeutralButton(context.resources.getString(R.string.delete_post)) { _, _ ->
-            postReference.document(posts[position].id).delete()
+            postReference.document(targetPost.id).delete()
         }
         builder.setNegativeButton(android.R.string.cancel, null)
         builder.create().show()

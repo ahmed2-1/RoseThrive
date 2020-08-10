@@ -25,7 +25,6 @@ class MainActivity : AppCompatActivity(), MainListener {
         setSupportActionBar(findViewById(R.id.toolbar))
 
         initializeListener()
-//        switchToLoginFragment()
     }
 
     private fun initializeListener() {

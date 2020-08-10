@@ -32,6 +32,15 @@
             android:textStyle="bold" />
 
         <TextView
+            android:id="@+id/post_owner_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:text="DEFAULT TITLE"
+            android:textSize="14sp"
+            android:textColor="@android:color/black" />
+
+        <TextView
             android:id="@+id/post_body_preview_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
