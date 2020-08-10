@@ -23,5 +23,11 @@
 hs_err_pid*
 
 # local props
+*.properties
 local.properties
-gradle-wrapper.properties
+
+# build folders
+app/build/*
+
+# hidden folders
+.idea/*
