@@ -10,7 +10,7 @@ import com.thoughtbot.expandablerecyclerview.models.ExpandableGroup
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class Comment(var body:String="", var uid:String="") : Parcelable, ExpandableGroup<Reply>(uid, ArrayList<Reply>()) {
+data class Comment(var body:String="", var uid:String="") : Parcelable {
     @get:Exclude
     var id = ""
     @ServerTimestamp
