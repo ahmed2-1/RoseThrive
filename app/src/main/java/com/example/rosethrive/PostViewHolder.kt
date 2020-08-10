@@ -12,6 +12,7 @@ class PostViewHolder: RecyclerView.ViewHolder {
     var titleTextView = itemView.post_title_text_view
     var bodyTextView = itemView.post_body_preview_text_view
     var ownerTextView = itemView.post_owner_text_view
+    var postIndicatorImageView = itemView.post_category_indicator
 
     constructor(itemView: View, adapter: PostAdapter, context: Context): super(itemView){
         this.context = context
@@ -35,5 +36,10 @@ class PostViewHolder: RecyclerView.ViewHolder {
         else{
             bodyTextView.text = post.body.subSequence(0..75)
         }
+        setCategoryImage(post)
+    }
+
+    private fun setCategoryImage(post: Post) {
+
     }
 }

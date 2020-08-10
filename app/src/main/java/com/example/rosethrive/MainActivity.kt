@@ -10,6 +10,7 @@ import android.view.MenuItem
 import androidx.core.view.MenuCompat
 import com.google.firebase.auth.FirebaseAuth
 import edu.rosehulman.rosefire.Rosefire
+import java.util.ArrayList
 
 class MainActivity : AppCompatActivity(), MainListener {
 
@@ -23,7 +24,8 @@ class MainActivity : AppCompatActivity(), MainListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(findViewById(R.id.toolbar))
-
+        val categories = this.resources.getStringArray(R.array.category_array)
+        Category.categories = categories.toCollection(ArrayList())
         initializeListener()
     }
 
