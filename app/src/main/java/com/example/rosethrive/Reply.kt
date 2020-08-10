@@ -9,11 +9,9 @@ import com.thoughtbot.expandablerecyclerview.models.ExpandableGroup
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class Reply(var body:String="", var uid:String="", var parent:String = "") : Parcelable{
+data class Reply(var body:String="", var uid:String="") : Parcelable{
     @get:Exclude
     var id = ""
-    @ServerTimestamp
-    var lastTouched: Timestamp? = null
 
     companion object {
         const val LAST_TOUCHED_KEY = "lastTouched"

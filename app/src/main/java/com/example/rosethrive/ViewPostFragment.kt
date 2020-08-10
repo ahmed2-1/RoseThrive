@@ -46,7 +46,7 @@ class ViewPostFragment() : Fragment() {
         recycler.layoutManager = LinearLayoutManager(requireContext())
 
         requireActivity().findViewById<FloatingActionButton>(R.id.fab).setOnClickListener { view ->
-            adapter.showReplyDialog()
+            adapter.showCommentDialog()
         }
         return view
     }

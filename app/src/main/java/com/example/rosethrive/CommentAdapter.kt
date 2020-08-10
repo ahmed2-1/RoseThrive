@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
-import com.example.rosethrive.Post.Companion.fromSnapshot
 import com.google.firebase.firestore.*
 import kotlinx.android.synthetic.main.fragment_reply.view.*
 
@@ -35,6 +34,8 @@ class CommentAdapter(private val uid: String, var context: Context, val post:Pos
                 }
             }
     }
+
+
 
     private fun processSnapshotChanges(querySnapshot: QuerySnapshot) {
         // Snapshots has documents and documentChanges which are flagged by type,
@@ -64,7 +65,7 @@ class CommentAdapter(private val uid: String, var context: Context, val post:Pos
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommentViewHolder {
-        val view = LayoutInflater.from(context).inflate(R.layout.reply_card_view, parent, false)
+        val view = LayoutInflater.from(context).inflate(R.layout.comment_card_view, parent, false)
         return CommentViewHolder(view, this, context)
     }
 
@@ -74,7 +75,7 @@ class CommentAdapter(private val uid: String, var context: Context, val post:Pos
         holder.bind(comments[position])
     }
 
-    fun showReplyDialog() {
+    fun showCommentDialog() {
         val builder = AlertDialog.Builder(context)
         //Set options
         val view = LayoutInflater.from(context).inflate(R.layout.fragment_reply, null, false)
@@ -84,6 +85,23 @@ class CommentAdapter(private val uid: String, var context: Context, val post:Pos
 
             val comment = Comment(body, uid)
             commentsReference.add(comment)
+        }
+        builder.setNegativeButton(android.R.string.cancel, null)
+        builder.create().show()
+    }
+
+    fun showReplyDialog(adapterPosition: Int) {
+        val comment = comments[adapterPosition]
+        val builder = AlertDialog.Builder(context)
+        //Set options
+        val view = LayoutInflater.from(context).inflate(R.layout.fragment_reply, null, false)
+        builder.setView(view)
+        builder.setPositiveButton(android.R.string.ok) { _: DialogInterface?, _: Int ->
+            val body = view.comment_body_edit_text.text.toString()
+
+            val reply = Reply(body, uid)
+            comment.replies.add(reply)
+            commentsReference.document(comment.id).set(comment)
         }
         builder.setNegativeButton(android.R.string.cancel, null)
         builder.create().show()
