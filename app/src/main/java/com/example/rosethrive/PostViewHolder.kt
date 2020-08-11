@@ -1,14 +1,10 @@
 package com.example.rosethrive
 
 import android.content.Context
-import android.graphics.Color
-import android.graphics.drawable.Drawable
 import android.util.Log
 import android.view.View
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.post_card_view.view.*
-import java.lang.IllegalArgumentException
 
 class PostViewHolder : RecyclerView.ViewHolder {
     lateinit var context: Context
@@ -18,7 +14,7 @@ class PostViewHolder : RecyclerView.ViewHolder {
     var ownerTextView = itemView.post_owner_text_view
     var postIndicatorImageView = itemView.post_category_indicator
 
-    constructor(itemView: View, adapter: PostAdapter, context: Context) : super(itemView) {
+    constructor(itemView: View, adapter: PostsAdapter, context: Context) : super(itemView) {
         this.context = context
         itemView.setOnClickListener {
             adapter.selectPostAt(adapterPosition)

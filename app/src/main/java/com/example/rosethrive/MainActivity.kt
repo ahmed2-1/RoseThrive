@@ -4,13 +4,12 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.MenuCompat
 import com.google.firebase.auth.FirebaseAuth
 import edu.rosehulman.rosefire.Rosefire
-import java.util.ArrayList
 
 class MainActivity : AppCompatActivity(), MainListener {
 
@@ -94,7 +93,7 @@ class MainActivity : AppCompatActivity(), MainListener {
     }
 
     override fun onPostSelected(post: Post) {
-        val viewFragment = ViewPostFragment.newInstance(uid, post)
+        val viewFragment = PostFragment.newInstance(uid, post)
         val ft = supportFragmentManager.beginTransaction()
         ft.replace(R.id.fragment_container, viewFragment)
         ft.addToBackStack("view")

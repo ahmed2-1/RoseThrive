@@ -34,8 +34,6 @@ class CommentAdapter(private val uid: String, var context: Context, val post:Pos
             }
     }
 
-
-
     private fun processSnapshotChanges(querySnapshot: QuerySnapshot) {
         // Snapshots has documents and documentChanges which are flagged by type,
         // so we can handle C,U,D differently.

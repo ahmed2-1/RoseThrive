@@ -1,6 +1,5 @@
 package com.example.rosethrive
 
-import android.R
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -17,7 +16,7 @@ private const val ARG_UID = "uid"
 class AccountFragment : Fragment() {
     private var listener: MainListener? = null
     private var uid: String? = null
-    private lateinit var adapter: PostAdapter
+    private lateinit var adapter: PostsAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,7 +35,7 @@ class AccountFragment : Fragment() {
         view.account_name_text_view.text = uid
         view.account_email_text_view.text = "$uid@rose-hulman.edu"
 
-        adapter = PostAdapter(requireContext(), listener, uid!!, true)
+        adapter = PostsAdapter(requireContext(), listener, uid!!, true)
         adapter.addSnapshotListener()
 
         view.account_posts_recycler_view.adapter = adapter

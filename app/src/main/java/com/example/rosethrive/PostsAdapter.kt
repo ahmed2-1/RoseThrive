@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.firestore.*
 import kotlinx.android.synthetic.main.content_post_elements.view.*
 
-class PostAdapter(
+class PostsAdapter(
     var context: Context,
     var listener: MainListener?,
     val uid: String,
@@ -142,10 +142,25 @@ class PostAdapter(
             edit(position, targetPost)
         }
         builder.setNeutralButton(context.resources.getString(R.string.delete_post)) { _, _ ->
+            deleteAllPostComments(targetPost.id)
             postReference.document(targetPost.id).delete()
         }
         builder.setNegativeButton(android.R.string.cancel, null)
         builder.create().show()
+    }
+
+    private fun deleteAllPostComments(id: String) {
+        val commentsReference = FirebaseFirestore
+            .getInstance()
+            .collection(Constants.COMMENTS_COLLECTION)
+
+        commentsReference.whereEqualTo(Comment.POST_ID_KEY, id).get().addOnSuccessListener {
+            for (item in it) {
+                commentsReference.document(item.id).delete()
+            }
+        }
+
+
     }
 
 

@@ -1,10 +1,10 @@
 package com.example.rosethrive
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.android.synthetic.main.fragment_view_post.view.*
@@ -12,7 +12,7 @@ import kotlinx.android.synthetic.main.fragment_view_post.view.*
 private const val ARG_UID = "uid"
 private const val ARG_POST = "post"
 
-class ViewPostFragment() : Fragment() {
+class PostFragment() : Fragment() {
     private var post: Post? = null
     private lateinit var uid: String
     private lateinit var adapter: CommentAdapter
@@ -54,7 +54,7 @@ class ViewPostFragment() : Fragment() {
     companion object {
         @JvmStatic
         fun newInstance(uid : String, post: Post) =
-            ViewPostFragment().apply {
+            PostFragment().apply {
                 arguments = Bundle().apply {
                     putString(ARG_UID, uid)
                     putParcelable(ARG_POST, post)
