@@ -56,7 +56,8 @@
             android:text="Sample Body"
             android:textSize="16sp"
             android:textColor="@android:color/black"
-            android:layout_marginBottom="10dp"/>
+            android:layout_marginBottom="10dp"
+            android:autoLink="web"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/replies_recycler_view"
