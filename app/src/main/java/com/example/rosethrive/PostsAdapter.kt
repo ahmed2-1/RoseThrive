@@ -142,11 +142,28 @@ class PostsAdapter(
             edit(position, targetPost)
         }
         builder.setNeutralButton(context.resources.getString(R.string.delete_post)) { _, _ ->
-            deleteAllPostComments(targetPost.id)
-            postReference.document(targetPost.id).delete()
+
+            showConfirmationDialog(targetPost.id)
+
         }
         builder.setNegativeButton(android.R.string.cancel, null)
         builder.create().show()
+    }
+
+    private fun showConfirmationDialog(id: String) {
+
+        val builder = AlertDialog.Builder(context)
+        builder.setTitle(context.getString(R.string.are_you_sure))
+        builder.setMessage(context.getString(R.string.confirmation_message))
+
+        builder.setNegativeButton(android.R.string.no, null)
+        builder.setPositiveButton(android.R.string.yes) { _, _ ->
+            deleteAllPostComments(id)
+            postReference.document(id).delete()
+        }
+
+        builder.create().show()
+
     }
 
     private fun deleteAllPostComments(id: String) {
