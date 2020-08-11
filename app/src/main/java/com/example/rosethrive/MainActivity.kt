@@ -34,7 +34,8 @@ class MainActivity : AppCompatActivity(), MainListener {
             Log.d(Constants.TAG, "In auth lis! user = $user")
 
             if (user != null) {
-                switchToMainFragment(user.uid)
+                uid = user.uid
+                switchToMainFragment(uid)
             } else {
                 switchToLoginFragment()
             }

@@ -10,7 +10,7 @@ import com.thoughtbot.expandablerecyclerview.models.ExpandableGroup
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class Comment(var body:String="", var uid:String="", var replies:ArrayList<Reply> = ArrayList()) : Parcelable {
+data class Comment(var body:String="", var uid:String="", var postID:String = "", var replies:ArrayList<Reply> = ArrayList()) : Parcelable {
     @get:Exclude
     var id = ""
     @ServerTimestamp
@@ -18,6 +18,7 @@ data class Comment(var body:String="", var uid:String="", var replies:ArrayList<
 
     companion object {
         const val LAST_TOUCHED_KEY = "lastTouched"
+        const val POST_ID_KEY = "postID"
 
         fun fromSnapshot(snapshot: DocumentSnapshot): Comment {
             val comment = snapshot.toObject(Comment::class.java)!!

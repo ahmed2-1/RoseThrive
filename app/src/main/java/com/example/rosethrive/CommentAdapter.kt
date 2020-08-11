@@ -16,8 +16,6 @@ class CommentAdapter(private val uid: String, var context: Context, val post:Pos
 
     private val commentsReference = FirebaseFirestore
         .getInstance()
-        .collection(Constants.POSTS_COLLECTION)
-        .document(post.id)
         .collection(Constants.COMMENTS_COLLECTION)
 
 
@@ -26,6 +24,7 @@ class CommentAdapter(private val uid: String, var context: Context, val post:Pos
     fun addSnapshotListener() {
         listenerRegistration = commentsReference
             .orderBy(Comment.LAST_TOUCHED_KEY, Query.Direction.ASCENDING)
+            .whereEqualTo(Comment.POST_ID_KEY, post.id)
             .addSnapshotListener { querySnapshot, e ->
                 if (e != null) {
                     Log.w(Constants.TAG, "listen error", e)
@@ -83,7 +82,7 @@ class CommentAdapter(private val uid: String, var context: Context, val post:Pos
         builder.setPositiveButton(android.R.string.ok) { _: DialogInterface?, _: Int ->
             val body = view.comment_body_edit_text.text.toString()
 
-            val comment = Comment(body, uid)
+            val comment = Comment(body, uid, post.id)
             commentsReference.add(comment)
         }
         builder.setNegativeButton(android.R.string.cancel, null)
