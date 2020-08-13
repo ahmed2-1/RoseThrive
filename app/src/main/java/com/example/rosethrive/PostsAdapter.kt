@@ -7,7 +7,10 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
-import com.google.firebase.firestore.*
+import com.google.firebase.firestore.DocumentChange
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.QuerySnapshot
 import kotlinx.android.synthetic.main.content_post_elements.view.*
 
 class PostsAdapter(
@@ -22,8 +25,6 @@ class PostsAdapter(
     val postReference = FirebaseFirestore
         .getInstance()
         .collection(Constants.POSTS_COLLECTION)
-
-    private lateinit var listenerRegistration: ListenerRegistration
 
     fun addSnapshotListener() {
         val query = if (isAccount) {
@@ -96,6 +97,11 @@ class PostsAdapter(
         //Set options
         val view = LayoutInflater.from(context).inflate(R.layout.fragment_create, null, false)
         builder.setView(view)
+
+        view.add_image_button.setOnClickListener {
+
+        }
+
         builder.setPositiveButton(android.R.string.ok) { _: DialogInterface?, _: Int ->
             val title = view.title_edit_text.text.toString()
             val body = view.description_edit_text.text.toString()
@@ -179,6 +185,5 @@ class PostsAdapter(
 
 
     }
-
 
 }

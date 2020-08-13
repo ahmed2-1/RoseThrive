@@ -23,7 +23,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="jar:file:/C:/Program%20Files/Android/Android%20Studio/plugins/android/lib/android.jar!/images/material/icons/materialicons/location_city/baseline_location_city_24.xml" />
+                                      <entry key="url" value="jar:file:/snap/android-studio/91/android-studio/plugins/android/lib/android.jar!/images/material/icons/materialicons/add_a_photo/baseline_add_a_photo_24.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -33,8 +33,8 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="outputName" value="community" />
-                            <entry key="sourceFile" value="C:\Users\ahmed1\Documents\CSSE483\RoseThrive" />
+                            <entry key="outputName" value="ic_add_photos" />
+                            <entry key="sourceFile" value="$USER_HOME$/C:\Users\ahmed1\Documents\CSSE483\RoseThrive" />
                           </map>
                         </option>
                       </PersistentState>
