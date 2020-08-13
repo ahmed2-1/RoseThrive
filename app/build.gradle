@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId "com.example.rosethrive"
-        minSdkVersion 23
+        minSdkVersion 24
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
@@ -54,4 +54,5 @@ dependencies {
     implementation 'com.google.firebase:firebase-core:17.4.3'
     implementation 'edu.rosehulman.csse.rosefire:rosefire-android-client:2.1.0'
     implementation 'com.thoughtbot:expandablerecyclerview:1.4'
+    implementation 'com.google.firebase:firebase-storage:19.1.1'
 }

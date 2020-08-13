@@ -8,7 +8,7 @@ import com.google.firebase.firestore.ServerTimestamp
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class Post(var title:String = "", var body:String = "", var category:Category = Category(""), val uid:String = "") :
+data class Post(var title:String = "", var body:String = "", var category:Category = Category(""), val uid:String = "",var imageDownloadURI:ArrayList<String> = ArrayList()) :
     Parcelable{
     @get:Exclude
     var id = ""

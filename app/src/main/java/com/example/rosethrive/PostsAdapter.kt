@@ -2,6 +2,9 @@ package com.example.rosethrive
 
 import android.content.Context
 import android.content.DialogInterface
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.os.AsyncTask
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -11,7 +14,11 @@ import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.UploadTask
 import kotlinx.android.synthetic.main.content_post_elements.view.*
+import java.io.ByteArrayOutputStream
+import kotlin.random.Random
 
 class PostsAdapter(
     var context: Context,
@@ -19,12 +26,20 @@ class PostsAdapter(
     val uid: String,
     val isAccount: Boolean
 ) :
-    RecyclerView.Adapter<PostViewHolder>() {
+    RecyclerView.Adapter<PostViewHolder>(),
+MainActivity.ImageListener{
     var posts = ArrayList<Post>()
+    var newPostImages:ArrayList<String> = ArrayList()
 
     val postReference = FirebaseFirestore
         .getInstance()
         .collection(Constants.POSTS_COLLECTION)
+
+    val imageReference = FirebaseFirestore
+        .getInstance()
+        .collection(Constants.IMAGES_COLLECTION)
+
+    var storageRef = FirebaseStorage.getInstance().reference.child("images")
 
     fun addSnapshotListener() {
         val query = if (isAccount) {
@@ -99,7 +114,7 @@ class PostsAdapter(
         builder.setView(view)
 
         view.add_image_button.setOnClickListener {
-
+            listener?.showPictureDialog(this)
         }
 
         builder.setPositiveButton(android.R.string.ok) { _: DialogInterface?, _: Int ->
@@ -107,12 +122,17 @@ class PostsAdapter(
             val body = view.description_edit_text.text.toString()
             val categoryName = view.category_spinner.selectedItem.toString()
             val category = Category(categoryName)
-
             val post = Post(title, body, category, uid)
+            for(location in newPostImages) {
+                val bitmap = BitmapFactory.decodeFile(location)
+                storageAdd(location, bitmap, post)
+            }
             add(post)
-
+            newPostImages.clear()
         }
-        builder.setNegativeButton(android.R.string.cancel, null)
+        builder.setNegativeButton(android.R.string.cancel) { _: DialogInterface?, _: Int ->
+            newPostImages.clear()
+        }
         builder.create().show()
     }
 
@@ -182,8 +202,44 @@ class PostsAdapter(
                 commentsReference.document(item.id).delete()
             }
         }
+    }
 
+    override fun handleImage(location: String) {
+        newPostImages.add(location)
+    }
 
+//    inner class ImageRescaleTask(val localPath: String, val post:Post) : AsyncTask<Void, Void, Bitmap>() {
+//        override fun doInBackground(vararg p0: Void?): Bitmap? {
+//            // Reduces length and width by a factor (currently 2).
+//            val ratio = 2
+//            return BitmapUtils.rotateAndScaleByRatio(context, localPath, ratio)
+//        }
+//
+//        override fun onPostExecute(bitmap: Bitmap?) {
+//            storageAdd(localPath, bitmap, post)
+//        }
+//    }
+
+    private fun storageAdd(localPath: String, bitmap: Bitmap?, post:Post) {
+        val baos = ByteArrayOutputStream()
+        bitmap?.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+        val data: ByteArray = baos.toByteArray()
+        val id = Math.abs(Random.nextLong()).toString()
+        val uploadTask: UploadTask = storageRef.child(id).putBytes(data)
+
+        uploadTask.continueWithTask { task ->
+            if (!task.isSuccessful) {
+                task.exception?.let {
+                    throw it
+                }
+            }
+            storageRef.child(id).downloadUrl
+        }.addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val downloadUri = task.result
+                post.imageDownloadURI.add(downloadUri.toString())
+            }
+        }
     }
 
 }
