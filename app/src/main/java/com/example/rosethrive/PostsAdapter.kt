@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.firestore.DocumentChange
@@ -111,21 +112,24 @@ class PostsAdapter(
     fun showAddDialog() {
         val builder = AlertDialog.Builder(context)
         //Set options
-        val view = LayoutInflater.from(context).inflate(R.layout.fragment_create, null, false)
-        builder.setView(view)
+        val dialogView = LayoutInflater.from(context).inflate(R.layout.fragment_create, null, false)
+        builder.setView(dialogView)
 
-        view.add_image_button.setOnClickListener {
+
+        val adapter = DialogImageAdapter(context)
+        dialogView.image_grid.adapter = adapter
+
+        dialogView.add_image_button.setOnClickListener {
             listener?.showPictureDialog(this) { location ->
-                // TODO add image view
-//                view.image_grid.addView()
-
+                val bitmap = BitmapFactory.decodeFile(location)
+                adapter.add(bitmap)
             }
         }
 
         builder.setPositiveButton(android.R.string.ok) { _: DialogInterface?, _: Int ->
-            val title = view.title_edit_text.text.toString()
-            val body = view.description_edit_text.text.toString()
-            val categoryName = view.category_spinner.selectedItem.toString()
+            val title = dialogView.title_edit_text.text.toString()
+            val body = dialogView.description_edit_text.text.toString()
+            val categoryName = dialogView.category_spinner.selectedItem.toString()
             val category = Category(categoryName)
             val post = Post(title, body, category, uid)
 

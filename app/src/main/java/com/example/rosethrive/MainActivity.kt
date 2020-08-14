@@ -116,14 +116,6 @@ class MainActivity : AppCompatActivity(), MainListener {
         ft.commit()
     }
 
-    override fun onCreatePostRequest(function: (Post) -> Unit) {
-        val createFragment = CreateFragment.newInstance("", "", function)
-        val ft = supportFragmentManager.beginTransaction()
-        ft.replace(R.id.fragment_container, createFragment)
-        ft.addToBackStack("create")
-        ft.commit()
-    }
-
     fun onRosefireLogin() {
         val signInIntent: Intent =
             Rosefire.getSignInIntent(this, getString(R.string.REGISTRY_TOKEN))
