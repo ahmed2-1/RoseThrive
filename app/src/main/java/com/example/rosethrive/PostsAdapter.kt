@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.DialogInterface
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.os.AsyncTask
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -18,6 +17,7 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
 import kotlinx.android.synthetic.main.content_post_elements.view.*
 import java.io.ByteArrayOutputStream
+import java.util.concurrent.CountDownLatch
 import kotlin.random.Random
 
 class PostsAdapter(
@@ -123,10 +123,14 @@ MainActivity.ImageListener{
             val categoryName = view.category_spinner.selectedItem.toString()
             val category = Category(categoryName)
             val post = Post(title, body, category, uid)
+            val countDownLatch = CountDownLatch(newPostImages.size)
+            Log.d(Constants.TAG, "CountDownLatch remaining before loop ${countDownLatch.count}")
             for(location in newPostImages) {
                 val bitmap = BitmapFactory.decodeFile(location)
-                storageAdd(location, bitmap, post)
+                storageAdd(bitmap, post, countDownLatch)
             }
+            countDownLatch.await()
+            Log.d(Constants.TAG, "In add dialog ${post.imageDownloadURI.toString()}")
             add(post)
             newPostImages.clear()
         }
@@ -220,24 +224,35 @@ MainActivity.ImageListener{
 //        }
 //    }
 
-    private fun storageAdd(localPath: String, bitmap: Bitmap?, post:Post) {
+    private fun storageAdd(
+        bitmap: Bitmap?,
+        post: Post,
+        countDownLatch: CountDownLatch
+    ) {
         val baos = ByteArrayOutputStream()
         bitmap?.compress(Bitmap.CompressFormat.JPEG, 100, baos)
         val data: ByteArray = baos.toByteArray()
         val id = Math.abs(Random.nextLong()).toString()
+        Log.d(Constants.TAG, "CountDownLatch remaining before task ${countDownLatch.count}")
         val uploadTask: UploadTask = storageRef.child(id).putBytes(data)
-
         uploadTask.continueWithTask { task ->
             if (!task.isSuccessful) {
                 task.exception?.let {
+                    Log.d(Constants.TAG, "Task failed")
+                    Log.e(Constants.TAG, it.toString())
                     throw it
                 }
             }
             storageRef.child(id).downloadUrl
         }.addOnCompleteListener { task ->
+            Log.d(Constants.TAG, "Task complete")
+            countDownLatch.countDown()
+            Log.d(Constants.TAG, "CountDownLatch remaining after task ${countDownLatch.count}")
             if (task.isSuccessful) {
                 val downloadUri = task.result
+                Log.d(Constants.TAG, "Task successful")
                 post.imageDownloadURI.add(downloadUri.toString())
+                Log.d(Constants.TAG, "In storeImage ${post.imageDownloadURI}")
             }
         }
     }
