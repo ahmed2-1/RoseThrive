@@ -5,5 +5,8 @@ interface MainListener {
 
     fun onCreatePostRequest(function: (Post) -> Unit)
 
-    fun showPictureDialog(listener:MainActivity.ImageListener)
+    fun showPictureDialog(
+        listener: MainActivity.ImageListener,
+        onPictureSelected: (String) -> Unit
+    )
 }

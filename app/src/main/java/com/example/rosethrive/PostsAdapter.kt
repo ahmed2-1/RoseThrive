@@ -17,7 +17,7 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
 import kotlinx.android.synthetic.main.content_post_elements.view.*
 import java.io.ByteArrayOutputStream
-import java.util.concurrent.CountDownLatch
+import kotlin.math.abs
 import kotlin.random.Random
 
 class PostsAdapter(
@@ -27,9 +27,9 @@ class PostsAdapter(
     val isAccount: Boolean
 ) :
     RecyclerView.Adapter<PostViewHolder>(),
-MainActivity.ImageListener{
+    MainActivity.ImageListener {
     var posts = ArrayList<Post>()
-    var newPostImages:ArrayList<String> = ArrayList()
+    var newPostImages: ArrayList<String> = ArrayList()
 
     val postReference = FirebaseFirestore
         .getInstance()
@@ -43,7 +43,8 @@ MainActivity.ImageListener{
 
     fun addSnapshotListener() {
         val query = if (isAccount) {
-            postReference.orderBy(Post.LAST_TOUCHED_KEY, Query.Direction.ASCENDING).whereEqualTo(Post.UID_KEY, uid)
+            postReference.orderBy(Post.LAST_TOUCHED_KEY, Query.Direction.ASCENDING)
+                .whereEqualTo(Post.UID_KEY, uid)
         } else {
             postReference.orderBy(Post.LAST_TOUCHED_KEY, Query.Direction.ASCENDING)
         }
@@ -114,7 +115,11 @@ MainActivity.ImageListener{
         builder.setView(view)
 
         view.add_image_button.setOnClickListener {
-            listener?.showPictureDialog(this)
+            listener?.showPictureDialog(this) { location ->
+                // TODO add image view
+//                view.image_grid.addView()
+
+            }
         }
 
         builder.setPositiveButton(android.R.string.ok) { _: DialogInterface?, _: Int ->
@@ -123,22 +128,19 @@ MainActivity.ImageListener{
             val categoryName = view.category_spinner.selectedItem.toString()
             val category = Category(categoryName)
             val post = Post(title, body, category, uid)
-            val countDownLatch = CountDownLatch(newPostImages.size)
-            Log.d(Constants.TAG, "CountDownLatch remaining before loop ${countDownLatch.count}")
-            for(location in newPostImages) {
-                val bitmap = BitmapFactory.decodeFile(location)
-                storageAdd(bitmap, post, countDownLatch)
+
+            uploadPost(post) {
+                add(post)
+                newPostImages.clear()
             }
-            countDownLatch.await()
-            Log.d(Constants.TAG, "In add dialog ${post.imageDownloadURI.toString()}")
-            add(post)
-            newPostImages.clear()
+
         }
         builder.setNegativeButton(android.R.string.cancel) { _: DialogInterface?, _: Int ->
             newPostImages.clear()
         }
         builder.create().show()
     }
+
 
     fun showEditDialog(position: Int) {
 
@@ -164,7 +166,7 @@ MainActivity.ImageListener{
             val body = view.description_edit_text.text.toString()
             val categoryName = view.category_spinner.selectedItem.toString()
             val category = Category(categoryName)
-            
+
             targetPost.title = title
             targetPost.body = body
             targetPost.category = category
@@ -224,17 +226,29 @@ MainActivity.ImageListener{
 //        }
 //    }
 
-    private fun storageAdd(
-        bitmap: Bitmap?,
+    private fun uploadPost(post: Post, onCompleteListener: () -> Unit = {}) {
+
+        val byteArrays = newPostImages.map { location ->
+            val bitmap = BitmapFactory.decodeFile(location)
+            val byteArrayStream = ByteArrayOutputStream()
+            bitmap?.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayStream)
+            byteArrayStream.toByteArray()
+        }
+
+        uploadImagesAndThen(byteArrays, post, byteArrays.size - 1, onCompleteListener)
+
+    }
+
+    private fun uploadImagesAndThen(
+        byteArray: List<ByteArray>,
         post: Post,
-        countDownLatch: CountDownLatch
+        index: Int,
+        onCompleteListener: () -> Unit
     ) {
-        val baos = ByteArrayOutputStream()
-        bitmap?.compress(Bitmap.CompressFormat.JPEG, 100, baos)
-        val data: ByteArray = baos.toByteArray()
-        val id = Math.abs(Random.nextLong()).toString()
-        Log.d(Constants.TAG, "CountDownLatch remaining before task ${countDownLatch.count}")
-        val uploadTask: UploadTask = storageRef.child(id).putBytes(data)
+
+        val id = abs(Random.nextLong()).toString()
+
+        val uploadTask: UploadTask = storageRef.child(id).putBytes(byteArray[index])
         uploadTask.continueWithTask { task ->
             if (!task.isSuccessful) {
                 task.exception?.let {
@@ -246,13 +260,16 @@ MainActivity.ImageListener{
             storageRef.child(id).downloadUrl
         }.addOnCompleteListener { task ->
             Log.d(Constants.TAG, "Task complete")
-            countDownLatch.countDown()
-            Log.d(Constants.TAG, "CountDownLatch remaining after task ${countDownLatch.count}")
+
             if (task.isSuccessful) {
                 val downloadUri = task.result
-                Log.d(Constants.TAG, "Task successful")
                 post.imageDownloadURI.add(downloadUri.toString())
-                Log.d(Constants.TAG, "In storeImage ${post.imageDownloadURI}")
+
+                if (index > 0) {
+                    uploadImagesAndThen(byteArray, post, index - 1, onCompleteListener)
+                } else {
+                    onCompleteListener()
+                }
             }
         }
     }

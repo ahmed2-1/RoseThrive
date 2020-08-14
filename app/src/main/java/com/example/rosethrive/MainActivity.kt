@@ -31,7 +31,8 @@ class MainActivity : AppCompatActivity(), MainListener {
     private val RC_TAKE_PICTURE = 3
     private val RC_CHOOSE_PICTURE = 4
 
-    private var imageListener:ImageListener? = null
+    private var imageListener: ImageListener? = null
+    private var onPictureTaken: ((String) -> Unit)? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -157,7 +158,11 @@ class MainActivity : AppCompatActivity(), MainListener {
         }
     }
 
-    override fun showPictureDialog(listener:ImageListener) {
+    override fun showPictureDialog(
+        listener: ImageListener,
+        onPictureTaken: (String) -> Unit
+    ) {
+        this.onPictureTaken = onPictureTaken
         imageListener = listener
         val builder = AlertDialog.Builder(this)
         builder.setTitle("Choose a photo source")
@@ -232,12 +237,14 @@ class MainActivity : AppCompatActivity(), MainListener {
         addPhotoToGallery()
         Log.d(Constants.TAG, "Sending to adapter this photo: $currentPhotoPath")
         imageListener?.handleImage(currentPhotoPath)
+        onPictureTaken?.let { it(currentPhotoPath) }
     }
 
     private fun sendGalleryPhotoToAdapter(data: Intent?) {
         if (data != null && data.data != null) {
             val location = data.data!!.toString()
             imageListener?.handleImage(location)
+            onPictureTaken?.let { it(location) }
         }
     }
 
