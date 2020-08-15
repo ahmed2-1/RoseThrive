@@ -9,8 +9,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 
 class DialogImageAdapter(
-    context: Context,
-    newPostImages: ArrayList<String>
+    context: Context
 ) : BaseAdapter() {
     val context = context
     var images = ArrayList<Bitmap>()

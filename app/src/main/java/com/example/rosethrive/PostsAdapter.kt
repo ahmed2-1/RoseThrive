@@ -193,7 +193,7 @@ class PostsAdapter(
 
         }
 
-        val adapter = DialogImageAdapter(context, newPostImages)
+        val adapter = DialogImageAdapter(context)
         view.image_grid.adapter = adapter
 
 
