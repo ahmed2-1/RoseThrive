@@ -114,14 +114,14 @@ class PostsAdapter(
     fun showAddDialog() {
         val builder = AlertDialog.Builder(context)
         //Set options
-        val dialogView = LayoutInflater.from(context).inflate(R.layout.fragment_create, null, false)
-        builder.setView(dialogView)
+        val view = LayoutInflater.from(context).inflate(R.layout.fragment_create, null, false)
+        builder.setView(view)
 
 
         val adapter = DialogImageAdapter(context)
-        dialogView.image_grid.adapter = adapter
+        view.image_grid.adapter = adapter
 
-        dialogView.add_image_button.setOnClickListener {
+        view.add_image_button.setOnClickListener {
             listener?.showPictureDialog(this) { location ->
                 Log.d(Constants.TAG, "Location: $location")
                 val bitmap = if (location.startsWith("content")) {
@@ -135,9 +135,9 @@ class PostsAdapter(
         }
 
         builder.setPositiveButton(android.R.string.ok) { _: DialogInterface?, _: Int ->
-            val title = dialogView.title_edit_text.text.toString()
-            val body = dialogView.description_edit_text.text.toString()
-            val categoryName = dialogView.category_spinner.selectedItem.toString()
+            val title = view.title_edit_text.text.toString()
+            val body = view.description_edit_text.text.toString()
+            val categoryName = view.category_spinner.selectedItem.toString()
             val category = Category(categoryName)
             val post = Post(title, body, category, uid)
 
@@ -166,7 +166,6 @@ class PostsAdapter(
         view.title_edit_text.setText(targetPost.title)
         view.description_edit_text.setText(targetPost.body)
 
-
         val categoryArray = context.resources.getStringArray(R.array.category_array)
         val catPos = categoryArray.indexOfFirst {
             it == targetPost.category.name
@@ -183,9 +182,35 @@ class PostsAdapter(
             targetPost.title = title
             targetPost.body = body
             targetPost.category = category
+            for(image in newPostImages){
+                targetPost.imageDownloadURI.add(image)
+            }
 
-            edit(position, targetPost)
+            uploadPost(targetPost) {
+                edit(position, targetPost)
+                newPostImages.clear()
+            }
+
         }
+
+        val adapter = DialogImageAdapter(context, newPostImages)
+        view.image_grid.adapter = adapter
+
+
+
+        view.add_image_button.setOnClickListener {
+            listener?.showPictureDialog(this) { location ->
+                Log.d(Constants.TAG, "Location: $location")
+                val bitmap = if (location.startsWith("content")) {
+                    MediaStore.Images.Media.getBitmap(context.contentResolver, Uri.parse(location))
+                } else if (location.startsWith("/storage")) {
+                    BitmapFactory.decodeFile(location)
+                } else throw IllegalStateException("File is in an invalid location")
+                Log.d(Constants.TAG, "Bitmap: $bitmap")
+                adapter.add(bitmap)
+            }
+        }
+
         builder.setNeutralButton(context.resources.getString(R.string.delete_post)) { _, _ ->
 
             showConfirmationDialog(targetPost.id)

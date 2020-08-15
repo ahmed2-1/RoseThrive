@@ -7,9 +7,11 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.LinearLayout
-import androidx.recyclerview.widget.ListAdapter
 
-class DialogImageAdapter(context: Context) : BaseAdapter() {
+class DialogImageAdapter(
+    context: Context,
+    newPostImages: ArrayList<String>
+) : BaseAdapter() {
     val context = context
     var images = ArrayList<Bitmap>()
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
