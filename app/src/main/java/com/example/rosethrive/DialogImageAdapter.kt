@@ -31,4 +31,5 @@ class DialogImageAdapter(
         images.add(bitmap)
         notifyDataSetChanged()
     }
+
 }

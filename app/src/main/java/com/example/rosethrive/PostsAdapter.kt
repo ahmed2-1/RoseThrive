@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.DialogInterface
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.provider.MediaStore
 import android.util.Log
@@ -17,9 +18,10 @@ import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
+import com.squareup.picasso.Picasso
+import com.squareup.picasso.Target
 import kotlinx.android.synthetic.main.content_post_elements.view.*
 import java.io.ByteArrayOutputStream
-import java.lang.IllegalStateException
 import kotlin.math.abs
 import kotlin.random.Random
 
@@ -117,7 +119,6 @@ class PostsAdapter(
         val view = LayoutInflater.from(context).inflate(R.layout.fragment_create, null, false)
         builder.setView(view)
 
-
         val adapter = DialogImageAdapter(context)
         view.image_grid.adapter = adapter
 
@@ -182,9 +183,6 @@ class PostsAdapter(
             targetPost.title = title
             targetPost.body = body
             targetPost.category = category
-            for(image in newPostImages){
-                targetPost.imageDownloadURI.add(image)
-            }
 
             uploadPost(targetPost) {
                 edit(position, targetPost)
@@ -196,7 +194,15 @@ class PostsAdapter(
         val adapter = DialogImageAdapter(context)
         view.image_grid.adapter = adapter
 
+        val target = RecursiveTarget(targetPost.imageDownloadURI, adapter)
 
+        target.execute()
+//        for (uri in targetPost.imageDownloadURI) {
+//            Log.d(Constants.TAG, "Loaded URI: $uri")
+//            Picasso.get()
+//                .load(uri)
+//                .into()
+//        }
 
         view.add_image_button.setOnClickListener {
             listener?.showPictureDialog(this) { location ->
@@ -218,6 +224,41 @@ class PostsAdapter(
         }
         builder.setNegativeButton(android.R.string.cancel, null)
         builder.create().show()
+    }
+
+    inner class RecursiveTarget(
+        private var downloadUris: List<String>,
+        var adapter: DialogImageAdapter
+    ) : Target {
+
+        var index = 0
+
+        fun execute() {
+            downloadIndex(index)
+        }
+
+        private fun downloadIndex(index: Int) {
+            if (index < downloadUris.size)
+                Picasso.get()
+                    .load(downloadUris[index])
+                    .into(this)
+        }
+
+        override fun onPrepareLoad(placeHolderDrawable: Drawable?) {
+            // Empty
+        }
+
+        override fun onBitmapFailed(e: Exception?, errorDrawable: Drawable?) {
+            // Empty
+        }
+
+        override fun onBitmapLoaded(bitmap: Bitmap?, from: Picasso.LoadedFrom?) {
+            if (bitmap != null) {
+                adapter.add(bitmap)
+            }
+            downloadIndex(++index)
+        }
+
     }
 
     private fun showConfirmationDialog(id: String) {
@@ -261,7 +302,9 @@ class PostsAdapter(
             baos.toByteArray()
         }
 
-        uploadImagesAndThen(byteArrays, post, byteArrays.size - 1, onCompleteListener)
+        if (byteArrays.isNotEmpty())
+            uploadImagesAndThen(byteArrays, post, byteArrays.size - 1, onCompleteListener)
+        else onCompleteListener()
 
     }
 
