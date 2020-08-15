@@ -15,7 +15,7 @@ class DialogImageAdapter(context: Context) : BaseAdapter() {
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         val imageView = ImageView(context)
         imageView.setImageBitmap(images[position])
-        var layoutParams = LinearLayout.LayoutParams(1000, 1000)
+        var layoutParams = LinearLayout.LayoutParams(600, 600)
         imageView.layoutParams = layoutParams
         return imageView
     }

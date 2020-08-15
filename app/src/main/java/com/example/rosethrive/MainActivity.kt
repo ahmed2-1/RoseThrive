@@ -234,9 +234,11 @@ class MainActivity : AppCompatActivity(), MainListener {
 
     private fun sendGalleryPhotoToAdapter(data: Intent?) {
         if (data != null && data.data != null) {
-            val location = data.data!!.toString()
-            imageListener?.handleImage(location)
-            onPictureTaken?.let { it(location) }
+            var location = data.data!!.toString()
+            if (location != null) {
+                imageListener?.handleImage(location)
+                onPictureTaken?.let { it(location) }
+            }
         }
     }
 

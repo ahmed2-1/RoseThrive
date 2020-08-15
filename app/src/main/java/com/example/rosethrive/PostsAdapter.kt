@@ -4,10 +4,11 @@ import android.content.Context
 import android.content.DialogInterface
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.net.Uri
+import android.provider.MediaStore
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.firestore.DocumentChange
@@ -18,6 +19,7 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
 import kotlinx.android.synthetic.main.content_post_elements.view.*
 import java.io.ByteArrayOutputStream
+import java.lang.IllegalStateException
 import kotlin.math.abs
 import kotlin.random.Random
 
@@ -121,7 +123,13 @@ class PostsAdapter(
 
         dialogView.add_image_button.setOnClickListener {
             listener?.showPictureDialog(this) { location ->
-                val bitmap = BitmapFactory.decodeFile(location)
+                Log.d(Constants.TAG, "Location: $location")
+                val bitmap = if (location.startsWith("content")) {
+                    MediaStore.Images.Media.getBitmap(context.contentResolver, Uri.parse(location))
+                } else if (location.startsWith("/storage")) {
+                    BitmapFactory.decodeFile(location)
+                } else throw IllegalStateException("File is in an invalid location")
+                Log.d(Constants.TAG, "Bitmap: $bitmap")
                 adapter.add(bitmap)
             }
         }
@@ -157,6 +165,7 @@ class PostsAdapter(
         val view = LayoutInflater.from(context).inflate(R.layout.fragment_edit, null, false)
         view.title_edit_text.setText(targetPost.title)
         view.description_edit_text.setText(targetPost.body)
+
 
         val categoryArray = context.resources.getStringArray(R.array.category_array)
         val catPos = categoryArray.indexOfFirst {
@@ -218,25 +227,13 @@ class PostsAdapter(
         newPostImages.add(location)
     }
 
-//    inner class ImageRescaleTask(val localPath: String, val post:Post) : AsyncTask<Void, Void, Bitmap>() {
-//        override fun doInBackground(vararg p0: Void?): Bitmap? {
-//            // Reduces length and width by a factor (currently 2).
-//            val ratio = 2
-//            return BitmapUtils.rotateAndScaleByRatio(context, localPath, ratio)
-//        }
-//
-//        override fun onPostExecute(bitmap: Bitmap?) {
-//            storageAdd(localPath, bitmap, post)
-//        }
-//    }
-
     private fun uploadPost(post: Post, onCompleteListener: () -> Unit = {}) {
 
         val byteArrays = newPostImages.map { location ->
-            val bitmap = BitmapFactory.decodeFile(location)
-            val byteArrayStream = ByteArrayOutputStream()
-            bitmap?.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayStream)
-            byteArrayStream.toByteArray()
+            val bitmap = BitmapUtils.rotateAndScaleByRatio(context, location, 1)
+            val baos = ByteArrayOutputStream()
+            bitmap?.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+            baos.toByteArray()
         }
 
         uploadImagesAndThen(byteArrays, post, byteArrays.size - 1, onCompleteListener)
