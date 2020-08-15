@@ -1,12 +1,19 @@
 package com.example.rosethrive
 
+import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import androidx.core.view.marginBottom
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.squareup.picasso.Picasso
+import com.squareup.picasso.Target
+import kotlinx.android.synthetic.main.fragment_login.*
 import kotlinx.android.synthetic.main.fragment_view_post.view.*
 
 private const val ARG_UID = "uid"
@@ -37,6 +44,13 @@ class PostFragment() : Fragment() {
         view.post_body_text_view.text = post?.body
 
         if(post != null) {
+            for(image in post!!.imageDownloadURI){
+                var imageView = ImageView(context)
+                Picasso.get()
+                    .load(image)
+                    .into(imageView)
+                view.image_button_linear_layout.addView(imageView)
+            }
             adapter = CommentAdapter(uid, requireContext(), post!!)
             adapter.addSnapshotListener()
         }
@@ -50,6 +64,8 @@ class PostFragment() : Fragment() {
         }
         return view
     }
+
+
 
     companion object {
         @JvmStatic
