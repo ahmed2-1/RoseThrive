@@ -49,5 +49,7 @@
     <string name="REGISTRY_TOKEN">4dba1a85-cb2d-44b4-99c7-f518a70afbaf</string>
     <string name="are_you_sure">Are you sure?</string>
     <string name="confirmation_message">This action cannot be undone. Are you sure you want to proceed?</string>
+    <string name="channel_name">Rose thrive</string>
+    <string name="channel_desc">Rose Thrive notification</string>
 
 </resources>

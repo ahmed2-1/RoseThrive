@@ -34,14 +34,17 @@ class MainActivity : AppCompatActivity(), MainListener {
     private var imageListener: ImageListener? = null
     private var onPictureTaken: ((String) -> Unit)? = null
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(findViewById(R.id.toolbar))
 
+        NotificationService.setContext(this)
+        NotificationService.initialize()
+
         initializeListener()
     }
+
 
     private fun initializeListener() {
         authListener = FirebaseAuth.AuthStateListener {
@@ -99,7 +102,10 @@ class MainActivity : AppCompatActivity(), MainListener {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         return when (item.itemId) {
-            R.id.notif_settings -> true
+            R.id.notif_settings -> {
+                NotificationService.makeNotification("Test", "test test test")
+                true
+            }
             R.id.account_link -> {
                 switchToAccountFragment()
                 true

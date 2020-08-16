@@ -5,4 +5,5 @@ object Constants {
     const val TAG = "RoseThrive"
     const val POSTS_COLLECTION = "posts"
     const val IMAGES_COLLECTION = "images"
+    const val CHANNEL_ID: String = "RoseThriveNotif"
 }

@@ -40,10 +40,6 @@ class PostsAdapter(
         .getInstance()
         .collection(Constants.POSTS_COLLECTION)
 
-    val imageReference = FirebaseFirestore
-        .getInstance()
-        .collection(Constants.IMAGES_COLLECTION)
-
     var storageRef = FirebaseStorage.getInstance().reference.child("images")
 
     fun addSnapshotListener() {
@@ -61,6 +57,8 @@ class PostsAdapter(
                 processSnapshotChanges(querySnapshot!!)
             }
         }
+
+
     }
 
     private fun processSnapshotChanges(querySnapshot: QuerySnapshot) {
@@ -88,6 +86,7 @@ class PostsAdapter(
                 }
             }
         }
+
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
