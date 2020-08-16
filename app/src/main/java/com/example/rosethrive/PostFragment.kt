@@ -1,20 +1,17 @@
 package com.example.rosethrive
 
-import android.graphics.Bitmap
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import androidx.core.view.marginBottom
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.squareup.picasso.Picasso
-import com.squareup.picasso.Target
-import kotlinx.android.synthetic.main.fragment_login.*
 import kotlinx.android.synthetic.main.fragment_view_post.view.*
+import kotlinx.android.synthetic.main.view_image_dialog.view.*
 
 private const val ARG_UID = "uid"
 private const val ARG_POST = "post"
@@ -46,6 +43,9 @@ class PostFragment() : Fragment() {
         if(post != null) {
             for(image in post!!.imageDownloadURI){
                 var imageView = ImageView(context)
+                imageView.setOnClickListener {
+                    showImageDialog(image)
+                }
                 Picasso.get()
                     .load(image)
                     .into(imageView)
@@ -65,6 +65,15 @@ class PostFragment() : Fragment() {
         return view
     }
 
+    private fun showImageDialog(image: String) {
+        val builder = AlertDialog.Builder(requireContext(), android.R.style.Theme_Black_NoTitleBar_Fullscreen)
+        val view = LayoutInflater.from(context).inflate(R.layout.view_image_dialog, null, false)
+        builder.setView(view)
+        Picasso.get()
+            .load(image)
+            .into(view.view_image_zoomable)
+        builder.create().show()
+    }
 
 
     companion object {

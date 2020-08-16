@@ -39,15 +39,19 @@
             android:textSize="16sp"
             android:textColor="@android:color/black"
             android:layout_marginBottom="10dp"/>
-
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
         <LinearLayout
             android:id="@+id/image_button_linear_layout"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginBottom="10dp">
-
-        </LinearLayout>
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:showDividers="middle"
+            android:divider="@drawable/empty_tall_divider"/>
+    </HorizontalScrollView>
 
         <TextView
             android:id="@+id/post_body_text_view"
