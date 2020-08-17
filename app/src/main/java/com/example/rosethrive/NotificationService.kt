@@ -9,6 +9,7 @@ import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.app.TaskStackBuilder
 import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
@@ -53,9 +54,10 @@ object NotificationService {
     fun makeNotification(textTitle: String, textContent: String, post:Post?) {
         if (context != null) {
             val intent = Intent(context, MainActivity::class.java).apply {
+                //flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 this.putExtra("postToLoad", post)
             }
-            val pendingIntent: PendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+            val pendingIntent: PendingIntent = addBackStack(context!!, intent)!!
 
             var builder = NotificationCompat.Builder(context!!, Constants.CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_notification)
@@ -72,7 +74,14 @@ object NotificationService {
                 notify(notificationId, builder.build())
             }
         }
+    }
 
+    fun addBackStack(context: Context, intent: Intent): PendingIntent? {
+        val stackBuilder: TaskStackBuilder =
+            TaskStackBuilder.create(context.applicationContext)
+        stackBuilder.addNextIntentWithParentStack(intent)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        return stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
     }
 
     fun setContext(newContext: Context) {

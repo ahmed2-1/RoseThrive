@@ -70,15 +70,9 @@ class MainActivity : AppCompatActivity(), MainListener {
         auth.removeAuthStateListener(authListener)
     }
 
-    override fun onNewIntent(intent: Intent?) {
-        super.onNewIntent(intent)
-        setIntent(intent)
-    }
-
     private fun switchToLoginFragment() {
         val ft = supportFragmentManager.beginTransaction()
         ft.replace(R.id.fragment_container, LoginFragment())
-
         ft.commit()
     }
 
@@ -102,6 +96,12 @@ class MainActivity : AppCompatActivity(), MainListener {
         ft.commit()
     }
 
+    private fun switchToSettingsFragment() {
+        val ft = supportFragmentManager.beginTransaction()
+        ft.replace(R.id.fragment_container, SettingsFragment())
+        ft.commit()
+    }
+
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.menu_main, menu)
@@ -115,6 +115,7 @@ class MainActivity : AppCompatActivity(), MainListener {
         // as you specify a parent activity in AndroidManifest.xml.
         return when (item.itemId) {
             R.id.notif_settings -> {
+                switchToSettingsFragment()
                 true
             }
             R.id.account_link -> {
