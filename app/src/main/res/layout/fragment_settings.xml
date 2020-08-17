@@ -10,61 +10,53 @@
         android:layout_height="wrap_content"
         android:text="@string/notifications_settings_title"
         android:textStyle="bold"
-        android:textSize="24dp"
+        android:textSize="24sp"
         android:textColor="@android:color/black"
         android:layout_marginBottom="16dp" />
 
-    <Switch
+    <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/new_post_added_switch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:text="New post added"
+        android:text="@string/new_post_added"
         android:textSize="16sp"
         android:layout_marginVertical="8dp" />
 
-    <Switch
+    <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/new_reply_switch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:text="New reply to your post"
+        android:text="@string/new_reply_to_your_post"
         android:textSize="16sp"
         android:layout_marginVertical="8dp" />
 
-    <Switch
+    <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/new_reply_to_sub_switch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:text="New reply to subscribed post"
+        android:text="@string/new_reply_to_subscribed_post"
         android:textSize="16sp"
         android:layout_marginVertical="8dp" />
 
-    <Switch
+    <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/edit_to_sub_switch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:text="Edit to subscribed post"
+        android:text="@string/edit_to_subscribed_post"
         android:textSize="16sp"
         android:layout_marginVertical="8dp" />
 
-    <Switch
-        android:id="@+id/edit_to_last_item_switch"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:text="Edit to item last edited by you"
-        android:textSize="16sp"
-        android:layout_marginVertical="8dp" />
 
-    <Switch
+    <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/deleted_switch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:text="Subscribed post deleted"
+        android:text="@string/subscribed_post_deleted"
         android:textSize="16sp"
         android:layout_marginVertical="8dp" />
 

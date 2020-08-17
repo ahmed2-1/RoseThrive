@@ -51,5 +51,11 @@
     <string name="confirmation_message">This action cannot be undone. Are you sure you want to proceed?</string>
     <string name="channel_name">Rose thrive</string>
     <string name="channel_desc">Rose Thrive notification</string>
+    <string name="new_post_added">New post added</string>
+    <string name="new_reply_to_your_post">New reply to your post</string>
+    <string name="new_reply_to_subscribed_post">New reply to subscribed post</string>
+    <string name="edit_to_subscribed_post">Edit to subscribed post</string>
+    <string name="edit_to_item_last_edited_by_you">Edit to item last edited by you</string>
+    <string name="subscribed_post_deleted">Subscribed post deleted</string>
 
 </resources>
