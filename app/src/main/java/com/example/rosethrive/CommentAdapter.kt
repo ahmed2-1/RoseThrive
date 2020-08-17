@@ -12,7 +12,7 @@ import kotlinx.android.synthetic.main.fragment_reply.view.*
 
 class CommentAdapter(private val uid: String, var context: Context, val post:Post): RecyclerView.Adapter<CommentViewHolder>() {
 
-    var comments = ArrayList<Comment>()
+    private var comments = ArrayList<Comment>()
 
     private val commentsReference = FirebaseFirestore
         .getInstance()
@@ -41,18 +41,18 @@ class CommentAdapter(private val uid: String, var context: Context, val post:Pos
             val comment = Comment.fromSnapshot(documentChange.document)
             when (documentChange.type) {
                 DocumentChange.Type.ADDED -> {
-                    Log.d(Constants.TAG, "Adding $comment")
+//                    Log.d(Constants.TAG, "Adding $comment")
                     comments.add(0, comment)
                     notifyItemInserted(0)
                 }
                 DocumentChange.Type.REMOVED -> {
-                    Log.d(Constants.TAG, "Removing $comment")
+//                    Log.d(Constants.TAG, "Removing $comment")
                     val index = comments.indexOfFirst { it.id == comment.id }
                     comments.removeAt(index)
                     notifyItemRemoved(index)
                 }
                 DocumentChange.Type.MODIFIED -> {
-                    Log.d(Constants.TAG, "Modifying $comment")
+//                    Log.d(Constants.TAG, "Modifying $comment")
                     val index = comments.indexOfFirst { it.id == comment.id }
                     comments[index] = comment
                     notifyItemChanged(index)

@@ -68,7 +68,7 @@ class AccountFragment : Fragment() {
 
     override fun onPrepareOptionsMenu(menu: Menu) {
         super.onPrepareOptionsMenu(menu)
-        menu.findItem(com.example.rosethrive.R.id.account_link).isEnabled = false
+        menu.findItem(R.id.account_link).isEnabled = false
     }
 
     companion object {

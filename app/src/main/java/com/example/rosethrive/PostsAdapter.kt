@@ -27,20 +27,20 @@ import kotlin.random.Random
 
 class PostsAdapter(
     var context: Context,
-    var listener: MainListener?,
+    private var listener: MainListener?,
     val uid: String,
-    val isAccount: Boolean
+    private val isAccount: Boolean
 ) :
     RecyclerView.Adapter<PostViewHolder>(),
     MainActivity.ImageListener {
-    var posts = ArrayList<Post>()
-    var newPostImages: ArrayList<String> = ArrayList()
+    private var posts = ArrayList<Post>()
+    private var newPostImages: ArrayList<String> = ArrayList()
 
-    val postReference = FirebaseFirestore
+    private val postReference = FirebaseFirestore
         .getInstance()
         .collection(Constants.POSTS_COLLECTION)
 
-    var storageRef = FirebaseStorage.getInstance().reference.child("images")
+    private var storageRef = FirebaseStorage.getInstance().reference.child("images")
 
     fun addSnapshotListener() {
         val query = if (isAccount) {
@@ -104,11 +104,11 @@ class PostsAdapter(
         listener?.onPostSelected(posts[adapterPosition])
     }
 
-    fun add(post: Post) {
+    private fun add(post: Post) {
         postReference.add(post)
     }
 
-    private fun edit(position: Int, post: Post) {
+    private fun edit(position: Int) {
         postReference.document(posts[position].id).set(posts[position])
     }
 
@@ -124,11 +124,15 @@ class PostsAdapter(
         view.add_image_button.setOnClickListener {
             listener?.showPictureDialog(this) { location ->
                 Log.d(Constants.TAG, "Location: $location")
-                val bitmap = if (location.startsWith("content")) {
-                    MediaStore.Images.Media.getBitmap(context.contentResolver, Uri.parse(location))
-                } else if (location.startsWith("/storage")) {
-                    BitmapFactory.decodeFile(location)
-                } else throw IllegalStateException("File is in an invalid location")
+                val bitmap = when {
+                    location.startsWith("content") -> {
+                        MediaStore.Images.Media.getBitmap(context.contentResolver, Uri.parse(location))
+                    }
+                    location.startsWith("/storage") -> {
+                        BitmapFactory.decodeFile(location)
+                    }
+                    else -> throw IllegalStateException("File is in an invalid location")
+                }
                 Log.d(Constants.TAG, "Bitmap: $bitmap")
                 adapter.add(bitmap)
             }
@@ -184,7 +188,7 @@ class PostsAdapter(
             targetPost.category = category
 
             uploadPost(targetPost) {
-                edit(position, targetPost)
+                edit(position)
                 newPostImages.clear()
             }
 
@@ -206,11 +210,15 @@ class PostsAdapter(
         view.add_image_button.setOnClickListener {
             listener?.showPictureDialog(this) { location ->
                 Log.d(Constants.TAG, "Location: $location")
-                val bitmap = if (location.startsWith("content")) {
-                    MediaStore.Images.Media.getBitmap(context.contentResolver, Uri.parse(location))
-                } else if (location.startsWith("/storage")) {
-                    BitmapFactory.decodeFile(location)
-                } else throw IllegalStateException("File is in an invalid location")
+                val bitmap = when {
+                    location.startsWith("content") -> {
+                        MediaStore.Images.Media.getBitmap(context.contentResolver, Uri.parse(location))
+                    }
+                    location.startsWith("/storage") -> {
+                        BitmapFactory.decodeFile(location)
+                    }
+                    else -> throw IllegalStateException("File is in an invalid location")
+                }
                 Log.d(Constants.TAG, "Bitmap: $bitmap")
                 adapter.add(bitmap)
             }
@@ -227,10 +235,10 @@ class PostsAdapter(
 
     inner class RecursiveTarget(
         private var downloadUris: List<String>,
-        var adapter: DialogImageAdapter
+        private var adapter: DialogImageAdapter
     ) : Target {
 
-        var index = 0
+        private var index = 0
 
         fun execute() {
             downloadIndex(index)

@@ -2,7 +2,6 @@ package com.example.rosethrive
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -34,7 +33,7 @@ class ListFragment : Fragment() {
         val recyclerView =
             inflater.inflate(R.layout.fragment_list, container, false) as RecyclerView
 
-        Log.d(Constants.TAG, "ADAPTER CREATED!")
+//        Log.d(Constants.TAG, "ADAPTER CREATED!")
         adapter = PostsAdapter(requireContext(), listener, uid!!, false)
         adapter.addSnapshotListener()
 
@@ -43,7 +42,7 @@ class ListFragment : Fragment() {
         recyclerView.setHasFixedSize(true)
 
         requireActivity().findViewById<FloatingActionButton>(R.id.fab).visibility = View.VISIBLE
-        requireActivity().findViewById<FloatingActionButton>(R.id.fab).setOnClickListener { view ->
+        requireActivity().findViewById<FloatingActionButton>(R.id.fab).setOnClickListener {
             adapter.showAddDialog()
         }
 

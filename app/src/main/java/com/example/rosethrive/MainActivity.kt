@@ -25,8 +25,8 @@ class MainActivity : AppCompatActivity(), MainListener {
 
     private var uid: String = "default"
     private val auth = FirebaseAuth.getInstance()
-    lateinit var authListener: FirebaseAuth.AuthStateListener
-    var currentPhotoPath = ""
+    private lateinit var authListener: FirebaseAuth.AuthStateListener
+    private var currentPhotoPath = ""
 
     private val RC_ROSEFIRE_LOGIN = 2
     private val RC_TAKE_PICTURE = 3
@@ -118,15 +118,15 @@ class MainActivity : AppCompatActivity(), MainListener {
 
     }
 
-    private fun switchToAccountFragment(addToBackStack: Boolean = false) {
-        switchToFragment(AccountFragment.ARG_NAME, AccountFragment.newInstance(uid), addToBackStack)
+    private fun switchToAccountFragment() {
+        switchToFragment(AccountFragment.ARG_NAME, AccountFragment.newInstance(uid), true)
     }
 
-    private fun switchToSettingsFragment(addToBackStack: Boolean = false) {
+    private fun switchToSettingsFragment() {
         switchToFragment(
             SettingsFragment.ARG_NAME,
             SettingsFragment.newInstance(uid),
-            addToBackStack
+            true
         )
     }
 
@@ -151,7 +151,7 @@ class MainActivity : AppCompatActivity(), MainListener {
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.menu_main, menu)
-        MenuCompat.setGroupDividerEnabled(menu, true);
+        MenuCompat.setGroupDividerEnabled(menu, true)
         return true
     }
 
@@ -161,11 +161,11 @@ class MainActivity : AppCompatActivity(), MainListener {
         // as you specify a parent activity in AndroidManifest.xml.
         return when (item.itemId) {
             R.id.notif_settings -> {
-                switchToSettingsFragment(true)
+                switchToSettingsFragment()
                 true
             }
             R.id.account_link -> {
-                switchToAccountFragment(true)
+                switchToAccountFragment()
                 true
             }
             R.id.sign_out -> {

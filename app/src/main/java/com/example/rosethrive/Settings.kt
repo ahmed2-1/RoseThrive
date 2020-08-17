@@ -26,7 +26,7 @@ data class Settings(
         const val DELETE_SUBBED_KEY = "subbedPostDeleted"
 
         fun fromSnapshot(snapshot: DocumentSnapshot): Settings {
-            var settings = snapshot.toObject(Settings::class.java)!!
+            val settings = snapshot.toObject(Settings::class.java)!!
             settings.id = snapshot.id
             return settings
         }

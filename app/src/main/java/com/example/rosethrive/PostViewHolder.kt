@@ -6,25 +6,22 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.post_card_view.view.*
 
-class PostViewHolder : RecyclerView.ViewHolder {
-    lateinit var context: Context
+class PostViewHolder(itemView: View, adapter: PostsAdapter, var context: Context) :
+    RecyclerView.ViewHolder(itemView) {
 
-    var titleTextView = itemView.post_title_text_view
-    var bodyTextView = itemView.post_body_preview_text_view
-    var ownerTextView = itemView.post_owner_text_view
-    var postIndicatorImageView = itemView.post_category_indicator
+    private var titleTextView = itemView.post_title_text_view
+    private var bodyTextView = itemView.post_body_preview_text_view
+    private var ownerTextView = itemView.post_owner_text_view
+    private var postIndicatorImageView = itemView.post_category_indicator
 
-    constructor(itemView: View, adapter: PostsAdapter, context: Context) : super(itemView) {
-        this.context = context
+    init {
         itemView.setOnClickListener {
             adapter.selectPostAt(adapterPosition)
         }
-
         itemView.setOnLongClickListener {
             adapter.showEditDialog(adapterPosition)
             true
         }
-
     }
 
     fun bind(post: Post) {

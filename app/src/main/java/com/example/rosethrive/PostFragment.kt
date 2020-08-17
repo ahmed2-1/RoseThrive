@@ -1,7 +1,6 @@
 package com.example.rosethrive
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,7 +16,7 @@ import kotlinx.android.synthetic.main.view_image_dialog.view.*
 private const val ARG_UID = "uid"
 private const val ARG_POST = "post"
 
-class PostFragment() : Fragment() {
+class PostFragment : Fragment() {
     private var post: Post? = null
     private lateinit var uid: String
     private lateinit var adapter: CommentAdapter
@@ -42,9 +41,9 @@ class PostFragment() : Fragment() {
         view.post_body_text_view.text = post?.body
 
         if(post != null) {
-            Log.d(Constants.TAG, "Post is not null, ${post!!.id}")
+//            Log.d(Constants.TAG, "Post is not null, ${post!!.id}")
             for(image in post!!.imageDownloadURI){
-                var imageView = ImageView(context)
+                val imageView = ImageView(context)
                 imageView.setOnClickListener {
                     showImageDialog(image)
                 }
@@ -61,7 +60,7 @@ class PostFragment() : Fragment() {
         recycler.adapter = adapter
         recycler.layoutManager = LinearLayoutManager(requireContext())
 
-        requireActivity().findViewById<FloatingActionButton>(R.id.fab).setOnClickListener { view ->
+        requireActivity().findViewById<FloatingActionButton>(R.id.fab).setOnClickListener {
             adapter.showCommentDialog()
         }
         return view
