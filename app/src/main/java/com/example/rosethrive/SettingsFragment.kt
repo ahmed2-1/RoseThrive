@@ -25,6 +25,11 @@ class SettingsFragment : Fragment() {
         }
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString(ARG_UID, uid)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -40,9 +45,10 @@ class SettingsFragment : Fragment() {
     }
 
     companion object {
+        const val ARG_NAME = "SettingsFragment"
 
         @JvmStatic
-        fun newInstance(uid: String, param2: String) =
+        fun newInstance(uid: String) =
             SettingsFragment().apply {
                 arguments = Bundle().apply {
                     putString(ARG_UID, uid)

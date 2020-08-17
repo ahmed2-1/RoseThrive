@@ -14,6 +14,7 @@ private const val ARG_UID = "uid"
 
 
 class AccountFragment : Fragment() {
+
     private var listener: MainListener? = null
     private var uid: String? = null
     private lateinit var adapter: PostsAdapter
@@ -30,7 +31,8 @@ class AccountFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        val view =  inflater.inflate(com.example.rosethrive.R.layout.fragment_account, container, false)
+        val view =
+            inflater.inflate(R.layout.fragment_account, container, false)
 
         view.account_name_text_view.text = uid
         view.account_email_text_view.text = "$uid@rose-hulman.edu"
@@ -44,12 +46,16 @@ class AccountFragment : Fragment() {
         return view
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString(ARG_UID, uid)
+    }
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        if(context is MainListener){
+        if (context is MainListener) {
             listener = context
-        }
-        else{
+        } else {
             throw RuntimeException("$context must implement OnPhotoSelectedListener")
         }
         setHasOptionsMenu(true)
@@ -66,6 +72,8 @@ class AccountFragment : Fragment() {
     }
 
     companion object {
+        const val ARG_NAME = "AccountFragment"
+
         @JvmStatic
         fun newInstance(uid: String) =
             AccountFragment().apply {

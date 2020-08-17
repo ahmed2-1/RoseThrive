@@ -68,7 +68,8 @@ class PostFragment() : Fragment() {
     }
 
     private fun showImageDialog(image: String) {
-        val builder = AlertDialog.Builder(requireContext(), android.R.style.Theme_Black_NoTitleBar_Fullscreen)
+        val builder =
+            AlertDialog.Builder(requireContext(), android.R.style.Theme_Black_NoTitleBar_Fullscreen)
         val view = LayoutInflater.from(context).inflate(R.layout.view_image_dialog, null, false)
         builder.setView(view)
         Picasso.get()
@@ -78,9 +79,18 @@ class PostFragment() : Fragment() {
     }
 
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+
+        outState.putString(ARG_UID, uid)
+        outState.putParcelable(ARG_POST, post)
+    }
+
     companion object {
+        const val ARG_NAME = "PostFragment"
+
         @JvmStatic
-        fun newInstance(uid : String, post: Post) =
+        fun newInstance(uid: String, post: Post) =
             PostFragment().apply {
                 arguments = Bundle().apply {
                     putString(ARG_UID, uid)

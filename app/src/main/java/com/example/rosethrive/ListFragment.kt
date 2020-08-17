@@ -17,7 +17,6 @@ class ListFragment : Fragment() {
     private var listener: MainListener? = null
     private lateinit var adapter: PostsAdapter
 
-    // TODO: Rename and change types of parameters
     private var uid: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,6 +34,7 @@ class ListFragment : Fragment() {
         val recyclerView =
             inflater.inflate(R.layout.fragment_list, container, false) as RecyclerView
 
+        Log.d(Constants.TAG, "ADAPTER CREATED!")
         adapter = PostsAdapter(requireContext(), listener, uid!!, false)
         adapter.addSnapshotListener()
 
@@ -44,7 +44,7 @@ class ListFragment : Fragment() {
 
         requireActivity().findViewById<FloatingActionButton>(R.id.fab).visibility = View.VISIBLE
         requireActivity().findViewById<FloatingActionButton>(R.id.fab).setOnClickListener { view ->
-            adapter. showAddDialog()
+            adapter.showAddDialog()
         }
 
         return recyclerView
@@ -52,17 +52,14 @@ class ListFragment : Fragment() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putParcelableArrayList("posts", adapter.posts)
-        Log.d(Constants.TAG, "Saved")
-        Log.d(Constants.TAG, adapter.posts.toString())
+        outState.putString(ARG_UID, uid)
     }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        if(context is MainListener){
+        if (context is MainListener) {
             listener = context
-        }
-        else{
+        } else {
             throw RuntimeException("$context must implement OnPhotoSelectedListener")
         }
     }
@@ -73,6 +70,8 @@ class ListFragment : Fragment() {
     }
 
     companion object {
+        const val ARG_NAME = "ListFragment"
+
         @JvmStatic
         fun newInstance(uid: String) =
             ListFragment().apply {

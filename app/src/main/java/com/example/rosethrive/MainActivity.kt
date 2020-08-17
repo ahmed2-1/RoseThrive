@@ -13,6 +13,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import androidx.core.view.MenuCompat
+import androidx.fragment.app.Fragment
 import com.google.firebase.auth.FirebaseAuth
 import edu.rosehulman.rosefire.Rosefire
 import java.io.File
@@ -31,11 +32,19 @@ class MainActivity : AppCompatActivity(), MainListener {
     private val RC_TAKE_PICTURE = 3
     private val RC_CHOOSE_PICTURE = 4
 
+    private val LAST_FRAGMENT_KEY = "lastFragment"
+    private var lastFragment: Fragment? = null
+
     private var imageListener: ImageListener? = null
     private var onPictureTaken: ((String) -> Unit)? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        if (savedInstanceState != null) {
+            lastFragment = supportFragmentManager.getFragment(savedInstanceState, LAST_FRAGMENT_KEY)
+        }
+
         setContentView(R.layout.activity_main)
         setSupportActionBar(findViewById(R.id.toolbar))
 
@@ -44,20 +53,26 @@ class MainActivity : AppCompatActivity(), MainListener {
         initializeListener()
     }
 
-
     private fun initializeListener() {
         authListener = FirebaseAuth.AuthStateListener {
             val user = it.currentUser
 
-            val intendedPost = intent.extras?.getParcelable<Post>("postToLoad")
-
             if (user != null) {
                 uid = user.uid
-                switchToStartupFragment(uid, intendedPost)
+
+                if (lastFragment == null) {
+                    val intendedPost = intent.extras?.getParcelable<Post>("postToLoad")
+                    switchToStartupFragment(uid, intendedPost)
+                } else
+                    switchToLastFragment()
             } else {
                 switchToLoginFragment()
             }
         }
+    }
+
+    private fun switchToLastFragment() {
+        lastFragment?.let { switchToFragment("lastFragment", it) }
     }
 
     override fun onStart() {
@@ -70,35 +85,61 @@ class MainActivity : AppCompatActivity(), MainListener {
         auth.removeAuthStateListener(authListener)
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        lastFragment?.let { supportFragmentManager.putFragment(outState, LAST_FRAGMENT_KEY, it) }
+    }
+
     private fun switchToLoginFragment() {
         val ft = supportFragmentManager.beginTransaction()
         ft.replace(R.id.fragment_container, LoginFragment())
         ft.commit()
     }
 
-    private fun switchToStartupFragment(uid: String, intendedPost: Post?) {
-        val ft = supportFragmentManager.beginTransaction()
+    private fun switchToStartupFragment(
+        uid: String,
+        intendedPost: Post?,
+        addToBackStack: Boolean = false
+    ) {
+
         if (intendedPost == null) {
-            ft.replace(R.id.fragment_container, ListFragment.newInstance(uid))
+            switchToFragment(ListFragment.ARG_NAME, ListFragment.newInstance(uid), addToBackStack)
+
+            NotificationService.setUID(uid)
+            NotificationService.initialize()
+        } else {
+            switchToFragment(ListFragment.ARG_NAME, ListFragment.newInstance(uid), addToBackStack)
+            switchToFragment(
+                PostFragment.ARG_NAME,
+                PostFragment.newInstance(uid, intendedPost),
+                true
+            )
         }
-        else{
-            ft.replace(R.id.fragment_container, PostFragment.newInstance(uid, intendedPost))
-        }
-        NotificationService.setUID(uid)
-        NotificationService.initialize()
-        ft.commit()
+
     }
 
-    private fun switchToAccountFragment() {
-        val ft = supportFragmentManager.beginTransaction()
-        ft.replace(R.id.fragment_container, AccountFragment.newInstance(uid))
-        ft.addToBackStack("account")
-        ft.commit()
+    private fun switchToAccountFragment(addToBackStack: Boolean = false) {
+        switchToFragment(AccountFragment.ARG_NAME, AccountFragment.newInstance(uid), addToBackStack)
     }
 
-    private fun switchToSettingsFragment() {
+    private fun switchToSettingsFragment(addToBackStack: Boolean = false) {
+        switchToFragment(
+            SettingsFragment.ARG_NAME,
+            SettingsFragment.newInstance(uid),
+            addToBackStack
+        )
+    }
+
+    private fun switchToFragment(
+        fragmentName: String,
+        fragment: Fragment,
+        addToBackStack: Boolean = false
+    ) {
+        lastFragment = fragment
         val ft = supportFragmentManager.beginTransaction()
-        ft.replace(R.id.fragment_container, SettingsFragment())
+        ft.replace(R.id.fragment_container, fragment)
+        if (addToBackStack)
+            ft.addToBackStack(fragmentName)
         ft.commit()
     }
 
@@ -115,11 +156,11 @@ class MainActivity : AppCompatActivity(), MainListener {
         // as you specify a parent activity in AndroidManifest.xml.
         return when (item.itemId) {
             R.id.notif_settings -> {
-                switchToSettingsFragment()
+                switchToSettingsFragment(true)
                 true
             }
             R.id.account_link -> {
-                switchToAccountFragment()
+                switchToAccountFragment(true)
                 true
             }
             R.id.sign_out -> {
@@ -131,11 +172,7 @@ class MainActivity : AppCompatActivity(), MainListener {
     }
 
     override fun onPostSelected(post: Post) {
-        val viewFragment = PostFragment.newInstance(uid, post)
-        val ft = supportFragmentManager.beginTransaction()
-        ft.replace(R.id.fragment_container, viewFragment)
-        ft.addToBackStack("view")
-        ft.commit()
+        switchToFragment(PostFragment.ARG_NAME, PostFragment.newInstance(uid, post), true)
     }
 
     fun onRosefireLogin() {
