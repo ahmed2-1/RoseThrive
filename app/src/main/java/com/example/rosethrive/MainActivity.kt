@@ -40,7 +40,6 @@ class MainActivity : AppCompatActivity(), MainListener {
         setSupportActionBar(findViewById(R.id.toolbar))
 
         NotificationService.setContext(this)
-        NotificationService.initialize()
 
         initializeListener()
     }
@@ -49,11 +48,12 @@ class MainActivity : AppCompatActivity(), MainListener {
     private fun initializeListener() {
         authListener = FirebaseAuth.AuthStateListener {
             val user = it.currentUser
-            Log.d(Constants.TAG, "In auth lis! user = $user")
+
+            val intendedPost = intent.extras?.getParcelable<Post>("postToLoad")
 
             if (user != null) {
                 uid = user.uid
-                switchToMainFragment(uid)
+                switchToStartupFragment(uid, intendedPost)
             } else {
                 switchToLoginFragment()
             }
@@ -70,6 +70,11 @@ class MainActivity : AppCompatActivity(), MainListener {
         auth.removeAuthStateListener(authListener)
     }
 
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+    }
+
     private fun switchToLoginFragment() {
         val ft = supportFragmentManager.beginTransaction()
         ft.replace(R.id.fragment_container, LoginFragment())
@@ -77,9 +82,16 @@ class MainActivity : AppCompatActivity(), MainListener {
         ft.commit()
     }
 
-    private fun switchToMainFragment(uid: String) {
+    private fun switchToStartupFragment(uid: String, intendedPost: Post?) {
         val ft = supportFragmentManager.beginTransaction()
-        ft.replace(R.id.fragment_container, ListFragment.newInstance(uid))
+        if (intendedPost == null) {
+            ft.replace(R.id.fragment_container, ListFragment.newInstance(uid))
+        }
+        else{
+            ft.replace(R.id.fragment_container, PostFragment.newInstance(uid, intendedPost))
+        }
+        NotificationService.setUID(uid)
+        NotificationService.initialize()
         ft.commit()
     }
 
@@ -103,11 +115,14 @@ class MainActivity : AppCompatActivity(), MainListener {
         // as you specify a parent activity in AndroidManifest.xml.
         return when (item.itemId) {
             R.id.notif_settings -> {
-                NotificationService.makeNotification("Test", "test test test")
                 true
             }
             R.id.account_link -> {
                 switchToAccountFragment()
+                true
+            }
+            R.id.sign_out -> {
+                auth.signOut()
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -147,7 +162,8 @@ class MainActivity : AppCompatActivity(), MainListener {
                         Log.d(Constants.TAG, "Email: ${result.email}")
                         Log.d(Constants.TAG, "Group: ${result.group}")
                         uid = result.username
-                        switchToMainFragment(result.username)
+
+                        switchToStartupFragment(result.username, null)
                     } else {
                         Log.d(Constants.TAG, "Rosefire failed")
                     }

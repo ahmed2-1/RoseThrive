@@ -1,6 +1,7 @@
 package com.example.rosethrive
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -41,6 +42,7 @@ class PostFragment() : Fragment() {
         view.post_body_text_view.text = post?.body
 
         if(post != null) {
+            Log.d(Constants.TAG, "Post is not null, ${post!!.id}")
             for(image in post!!.imageDownloadURI){
                 var imageView = ImageView(context)
                 imageView.setOnClickListener {

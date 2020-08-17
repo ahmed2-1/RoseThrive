@@ -14,14 +14,22 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
 import kotlin.random.Random
 
+
 object NotificationService {
 
 
-    var isListening: Boolean = false
+    var isListeningPosts: Boolean = false
+    var isListeningComments: Boolean = false
+
+    var uid: String = ""
     private var context: Context? = null
     private val postReference = FirebaseFirestore
         .getInstance()
         .collection(Constants.POSTS_COLLECTION)
+
+    private val commentsReference = FirebaseFirestore
+        .getInstance()
+        .collection(Constants.COMMENTS_COLLECTION)
 
     private fun createNotificationChannel() {
         if (context != null) {
@@ -42,13 +50,12 @@ object NotificationService {
         }
     }
 
-    fun makeNotification(textTitle: String, textContent: String) {
-
+    fun makeNotification(textTitle: String, textContent: String, post:Post?) {
         if (context != null) {
             val intent = Intent(context, MainActivity::class.java).apply {
-                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                this.putExtra("postToLoad", post)
             }
-            val pendingIntent: PendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
+            val pendingIntent: PendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
 
             var builder = NotificationCompat.Builder(context!!, Constants.CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_notification)
@@ -72,44 +79,96 @@ object NotificationService {
         context = newContext
     }
 
+    fun setUID(newUID: String) {
+        uid = newUID
+    }
+
     fun initialize() {
         createNotificationChannel()
 
-        postReference.addSnapshotListener { querySnapshot, e ->
-            if (e != null) {
-                Log.w(Constants.TAG, "listen error", e)
-            } else {
-                sendChangesNotifications(querySnapshot!!)
+        if (!isListeningPosts) {
+            postReference.addSnapshotListener { querySnapshot, e ->
+                if (e != null) {
+                    Log.w(Constants.TAG, "listen error", e)
+                } else {
+                    sendPostChangesNotifications(querySnapshot!!)
+                }
+            }
+
+            commentsReference.addSnapshotListener { querySnapshot, e ->
+                if (e != null) {
+                    Log.w(Constants.TAG, "listen error", e)
+                } else {
+                    sendCommentChangesNotifications(querySnapshot!!)
+                }
             }
         }
     }
 
-    private fun sendChangesNotifications(querySnapshot: QuerySnapshot) {
-        if (isListening)
+    private fun sendPostChangesNotifications(querySnapshot: QuerySnapshot) {
+        if (isListeningPosts)
             for (documentChange in querySnapshot.documentChanges) {
                 val post = Post.fromSnapshot(documentChange.document)
-                when (documentChange.type) {
-                    DocumentChange.Type.ADDED -> {
-                        // check if they want to be notified about this
-                        makeNotification("New post!", post.title)
-                    }
-                    DocumentChange.Type.REMOVED -> {
-                        // check if they want to be notified about this
-                        makeNotification("Post deleted!", post.title)
-                    }
-                    DocumentChange.Type.MODIFIED -> {
-                        // check if they want to be notified about this
-                        Log.d(Constants.TAG, "NOTIFICATION: " + post.toString())
-                        makeNotification("Post edited!", post.title)
+                if (post.uid != uid) {
+                    when (documentChange.type) {
+                        DocumentChange.Type.ADDED -> {
+                            // check if they want to be notified about this
+                            makeNotification("New post!", post.title, post)
+                        }
+                        DocumentChange.Type.REMOVED -> {
+                            // check if they want to be notified about this
+                            makeNotification("Post deleted!", post.title, null)
+                        }
+                        DocumentChange.Type.MODIFIED -> {
+                            // check if they want to be notified about this
+                            makeNotification("Post edited!", post.title, post)
+                        }
                     }
                 }
             }
         else
-            startListening()
+            startListeningToPosts()
     }
 
-    fun startListening() {
-        isListening = true
+    var count = 0
+    private fun sendCommentChangesNotifications(querySnapshot: QuerySnapshot) {
+        count++
+        Log.d(Constants.TAG, "In sendCommentNotif, $count")
+        if (isListeningComments)
+            for (documentChange in querySnapshot.documentChanges) {
+                val comment = Comment.fromSnapshot(documentChange.document)
+                Log.d(Constants.TAG, "in notif service: ${comment.toString()}")
+                postReference.document(comment.postID).get().addOnSuccessListener {
+                    val post = Post.fromSnapshot(it)
+                    if (comment.uid != uid) {
+                        when (documentChange.type) {
+                            DocumentChange.Type.ADDED -> {
+                                // check if they want to be notified about this
+                                makeNotification("New comment!", "On post: ${post.title}", post)
+                            }
+                            DocumentChange.Type.REMOVED -> {
+                                // check if they want to be notified about this
+                                makeNotification("Comment deleted!", "On post: ${post.title}", null)
+                            }
+                            DocumentChange.Type.MODIFIED -> {
+                                // check if they want to be notified about this
+                                makeNotification("Comment edited!","On post: ${post.title}", post)
+                            }
+                        }
+                    }
+                }
+
+            }
+        else
+            startListeningToComments()
+    }
+
+    fun startListeningToPosts() {
+        isListeningPosts = true
+    }
+
+    fun startListeningToComments() {
+        isListeningComments = true
     }
 
 
