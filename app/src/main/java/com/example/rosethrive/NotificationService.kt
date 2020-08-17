@@ -12,6 +12,7 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.TaskStackBuilder
 import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.QuerySnapshot
 import kotlin.random.Random
 
@@ -24,6 +25,8 @@ object NotificationService {
 
     var uid: String = ""
     private var context: Context? = null
+    private var settings: Settings = Settings()
+
     private val postReference = FirebaseFirestore
         .getInstance()
         .collection(Constants.POSTS_COLLECTION)
@@ -31,6 +34,10 @@ object NotificationService {
     private val commentsReference = FirebaseFirestore
         .getInstance()
         .collection(Constants.COMMENTS_COLLECTION)
+
+    private val settingsReference = FirebaseFirestore
+        .getInstance()
+        .collection(Constants.SETTINGS_COLLECTION)
 
     private fun createNotificationChannel() {
         if (context != null) {
@@ -51,7 +58,7 @@ object NotificationService {
         }
     }
 
-    fun makeNotification(textTitle: String, textContent: String, post:Post?) {
+    fun makeNotification(textTitle: String, textContent: String, post: Post?) {
         if (context != null) {
             val intent = Intent(context, MainActivity::class.java).apply {
                 //flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
@@ -95,6 +102,16 @@ object NotificationService {
     fun initialize() {
         createNotificationChannel()
 
+        settingsReference.whereEqualTo(Settings.UID_KEY, uid).addSnapshotListener{ querySnapshot, e ->
+            if (e != null) {
+                Log.w(Constants.TAG, "listen error", e)
+            } else {
+                if ((querySnapshot != null) and (querySnapshot?.size() == 1)) {
+                    settings = Settings.fromSnapshot(querySnapshot!!.documents[0])
+                }
+            }
+        }
+
         if (!isListeningPosts) {
             postReference.addSnapshotListener { querySnapshot, e ->
                 if (e != null) {
@@ -112,6 +129,7 @@ object NotificationService {
                 }
             }
         }
+        Log.d(Constants.TAG, settings.toString())
     }
 
     private fun sendPostChangesNotifications(querySnapshot: QuerySnapshot) {
@@ -121,22 +139,41 @@ object NotificationService {
                 if (post.uid != uid) {
                     when (documentChange.type) {
                         DocumentChange.Type.ADDED -> {
-                            // check if they want to be notified about this
-                            makeNotification("New post!", post.title, post)
+                            if (settings.newPostAdded) {
+                                makeNotification(context!!.getString(R.string.new_post), post.title, post)
+                            }
                         }
                         DocumentChange.Type.REMOVED -> {
-                            // check if they want to be notified about this
-                            makeNotification("Post deleted!", post.title, null)
+                            notifyDelete(post)
                         }
                         DocumentChange.Type.MODIFIED -> {
-                            // check if they want to be notified about this
-                            makeNotification("Post edited!", post.title, post)
+                            notifyEdited(post)
                         }
                     }
                 }
             }
         else
             startListeningToPosts()
+    }
+
+    private fun notifyDelete(post: Post) {
+        if(settings.subbedPostDeleted){
+            commentsReference.whereEqualTo(Comment.POST_ID_KEY, post.id).whereEqualTo(Comment.UID_KEY, uid).get().addOnSuccessListener {
+                if(it.size() > 0){
+                    makeNotification(context!!.getString(R.string.post_deleted), post.title, null)
+                }
+            }
+        }
+    }
+
+    private fun notifyEdited(post: Post) {
+        if(settings.editToSubbedPost){
+            commentsReference.whereEqualTo(Comment.POST_ID_KEY, post.id).whereEqualTo(Comment.UID_KEY, uid).get().addOnSuccessListener {
+                if(it.size() > 0){
+                    makeNotification(context!!.getString(R.string.post_edited), post.title, null)
+                }
+            }
+        }
     }
 
     var count = 0
@@ -148,20 +185,20 @@ object NotificationService {
                 val comment = Comment.fromSnapshot(documentChange.document)
                 Log.d(Constants.TAG, "in notif service: ${comment.toString()}")
                 postReference.document(comment.postID).get().addOnSuccessListener {
-                    val post = Post.fromSnapshot(it)
                     if (comment.uid != uid) {
                         when (documentChange.type) {
                             DocumentChange.Type.ADDED -> {
                                 // check if they want to be notified about this
-                                makeNotification("New comment!", "On post: ${post.title}", post)
+                                val post = Post.fromSnapshot(it)
+                                notifyNewComment(post)
                             }
                             DocumentChange.Type.REMOVED -> {
                                 // check if they want to be notified about this
-                                makeNotification("Comment deleted!", "On post: ${post.title}", null)
+                                //makeNotification("Comment deleted!", "On post: ${post.title}", null)
                             }
                             DocumentChange.Type.MODIFIED -> {
                                 // check if they want to be notified about this
-                                makeNotification("Comment edited!","On post: ${post.title}", post)
+                                //makeNotification("Comment edited!", "On post: ${post.title}", post)
                             }
                         }
                     }
@@ -170,6 +207,21 @@ object NotificationService {
             }
         else
             startListeningToComments()
+    }
+
+    private fun notifyNewComment(post: Post) {
+        if(settings.newReplyToYourPost){
+            if(post.uid == uid){
+                makeNotification(context!!.getString(R.string.new_comment), "On your post: ${post.title}", post)
+            }
+        }
+        if(settings.newReplyToSubbedPost){
+            commentsReference.whereEqualTo(Comment.POST_ID_KEY, post.id).whereEqualTo(Comment.UID_KEY, uid).get().addOnSuccessListener {
+                if (it.size() > 0) {
+                    makeNotification(context!!.getString(R.string.new_comment), "On subbed post: ${post.title}", post)
+                }
+            }
+        }
     }
 
     fun startListeningToPosts() {

@@ -19,6 +19,7 @@ data class Comment(var body:String="", var uid:String="", var postID:String = ""
     companion object {
         const val LAST_TOUCHED_KEY = "lastTouched"
         const val POST_ID_KEY = "postID"
+        const val UID_KEY = "uid"
 
         fun fromSnapshot(snapshot: DocumentSnapshot): Comment {
             val comment = snapshot.toObject(Comment::class.java)!!
