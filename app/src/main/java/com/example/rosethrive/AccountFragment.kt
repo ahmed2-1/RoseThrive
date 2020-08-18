@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.android.synthetic.main.fragment_account.view.*
 
 private const val ARG_UID = "uid"
@@ -39,6 +40,11 @@ class AccountFragment : Fragment() {
 
         adapter = PostsAdapter(requireContext(), listener, uid!!, true)
         adapter.addSnapshotListener()
+
+        requireActivity().findViewById<FloatingActionButton>(R.id.fab).visibility = View.VISIBLE
+        requireActivity().findViewById<FloatingActionButton>(R.id.fab).setOnClickListener {
+            adapter.showAddDialog()
+        }
 
         view.account_posts_recycler_view.adapter = adapter
         view.account_posts_recycler_view.layoutManager = LinearLayoutManager(requireContext())

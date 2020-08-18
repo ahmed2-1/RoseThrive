@@ -54,7 +54,7 @@ class SettingsFragment : Fragment() {
                 setSwitchesInit(view)
             }
             else{
-                settings.uid = uid!!
+                settings = Settings(uid!!)
                 settingsReference.add(settings)
             }
             settingsReference.whereEqualTo(Settings.UID_KEY, uid).addSnapshotListener { querySnapshot, e ->
