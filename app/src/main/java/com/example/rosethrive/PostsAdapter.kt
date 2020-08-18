@@ -50,14 +50,14 @@ class PostsAdapter(
             postReference.orderBy(Post.LAST_TOUCHED_KEY, Query.Direction.ASCENDING)
         }
 
-        query.addSnapshotListener { querySnapshot, e ->
-            if (e != null) {
-                Log.w(Constants.TAG, "listen error", e)
-            } else {
-                processSnapshotChanges(querySnapshot!!)
-            }
+        query.addSnapshotListener {
+        querySnapshot, e ->
+        if (e != null) {
+            Log.w(Constants.TAG, "listen error", e)
+        } else {
+            processSnapshotChanges(querySnapshot!!)
         }
-
+    }
 
     }
 

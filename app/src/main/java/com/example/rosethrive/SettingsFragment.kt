@@ -7,15 +7,17 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.fragment_settings.view.*
 
 private const val ARG_UID = "uid"
+private const val ARG_SETTINGS = "settings"
 
 class SettingsFragment : Fragment() {
 
     private var uid: String? = null
-    private var settings: Settings = Settings()
+    private lateinit var settings: Settings
 
     private val settingsReference = FirebaseFirestore
         .getInstance()
@@ -26,11 +28,16 @@ class SettingsFragment : Fragment() {
         arguments?.let {
             uid = it.getString(ARG_UID)
         }
+        savedInstanceState?.let {
+            uid = it.getString(ARG_UID)
+            settings = it.getParcelable<Settings>(ARG_SETTINGS) ?: Settings(uid!!)
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putString(ARG_UID, uid)
+        outState.putParcelable(ARG_SETTINGS, settings)
     }
 
     override fun onCreateView(
@@ -50,10 +57,33 @@ class SettingsFragment : Fragment() {
                 settings.uid = uid!!
                 settingsReference.add(settings)
             }
+            settingsReference.whereEqualTo(Settings.UID_KEY, uid).addSnapshotListener { querySnapshot, e ->
+                if (e != null) {
+                    Log.w(Constants.TAG, "listen error", e)
+                } else {
+                    if (querySnapshot != null) {
+                        for (documentChange in querySnapshot.documentChanges) {
+                            val newSettings = Settings.fromSnapshot(documentChange.document)
+                            settings = when (documentChange.type) {
+                                DocumentChange.Type.ADDED -> {
+                                    newSettings
+                                }
+                                DocumentChange.Type.REMOVED -> {
+                                    Settings(uid!!)
+                                }
+                                DocumentChange.Type.MODIFIED -> {
+                                    newSettings
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         view.new_post_added_switch.setOnCheckedChangeListener { _, isChecked ->
             settings.newPostAdded = isChecked
+            Log.d(Constants.TAG, settings.id)
             settingsReference.document(settings.id).update(Settings.NEW_POST_KEY, isChecked)
         }
         view.new_reply_switch.setOnCheckedChangeListener { _, isChecked ->
