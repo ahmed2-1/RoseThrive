@@ -43,7 +43,7 @@ class SettingsFragment : Fragment() {
         settingsReference.whereEqualTo(Settings.UID_KEY, uid).get().addOnSuccessListener {
             if (it.size() == 1) {
                 settings = Settings.fromSnapshot(it.documents[0])
-                Log.d(Constants.TAG, "Settings retrieved: $settings")
+//                Log.d(Constants.TAG, "Settings retrieved: $settings")
                 setSwitchesInit(view)
             }
             else{

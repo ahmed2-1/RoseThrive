@@ -31,4 +31,8 @@ class LoginFragment : Fragment() {
         super.onStop()
         (activity as AppCompatActivity?)!!.supportActionBar!!.show()
     }
+
+    companion object{
+        const val ARG_NAME = "LoginFragment"
+    }
 }

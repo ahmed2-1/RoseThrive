@@ -179,11 +179,11 @@ object NotificationService {
     var count = 0
     private fun sendCommentChangesNotifications(querySnapshot: QuerySnapshot) {
         count++
-        Log.d(Constants.TAG, "In sendCommentNotif, $count")
+//        Log.d(Constants.TAG, "In sendCommentNotif, $count")
         if (isListeningComments)
             for (documentChange in querySnapshot.documentChanges) {
                 val comment = Comment.fromSnapshot(documentChange.document)
-                Log.d(Constants.TAG, "in notif service: ${comment.toString()}")
+//                Log.d(Constants.TAG, "in notif service: ${comment.toString()}")
                 postReference.document(comment.postID).get().addOnSuccessListener {
                     if (comment.uid != uid) {
                         when (documentChange.type) {

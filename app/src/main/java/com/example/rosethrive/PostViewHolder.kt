@@ -94,7 +94,7 @@ class PostViewHolder(itemView: View, adapter: PostsAdapter, var context: Context
             }
         }
 
-        Log.d(Constants.TAG, "CAT: ${post.category.name}, COLOR: $color")
+//        Log.d(Constants.TAG, "CAT: ${post.category.name}, COLOR: $color")
         postIndicatorImageView.setBackgroundColor( context.getColor(color) )
         postIndicatorImageView.setImageDrawable(context.getDrawable(drawable))
     }

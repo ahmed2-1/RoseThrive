@@ -68,18 +68,18 @@ class PostsAdapter(
             val post = Post.fromSnapshot(documentChange.document)
             when (documentChange.type) {
                 DocumentChange.Type.ADDED -> {
-                    Log.d(Constants.TAG, "Adding $post")
+//                    Log.d(Constants.TAG, "Adding $post")
                     posts.add(0, post)
                     notifyItemInserted(0)
                 }
                 DocumentChange.Type.REMOVED -> {
-                    Log.d(Constants.TAG, "Removing $post")
+//                    Log.d(Constants.TAG, "Removing $post")
                     val index = posts.indexOfFirst { it.id == post.id }
                     posts.removeAt(index)
                     notifyItemRemoved(index)
                 }
                 DocumentChange.Type.MODIFIED -> {
-                    Log.d(Constants.TAG, "Modifying $post")
+//                    Log.d(Constants.TAG, "Modifying $post")
                     val index = posts.indexOfFirst { it.id == post.id }
                     posts[index] = post
                     notifyItemChanged(index)

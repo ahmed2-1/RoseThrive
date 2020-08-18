@@ -104,7 +104,6 @@ class MainActivity : AppCompatActivity(), MainListener {
 
         if (intendedPost == null) {
             switchToFragment(ListFragment.ARG_NAME, ListFragment.newInstance(uid), addToBackStack)
-
             NotificationService.setUID(uid)
             NotificationService.initialize()
         } else {
@@ -169,6 +168,7 @@ class MainActivity : AppCompatActivity(), MainListener {
                 true
             }
             R.id.sign_out -> {
+                lastFragment = null
                 auth.signOut()
                 true
             }
