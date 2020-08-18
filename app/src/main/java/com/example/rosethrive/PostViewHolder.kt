@@ -1,7 +1,6 @@
 package com.example.rosethrive
 
 import android.content.Context
-import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.post_card_view.view.*
@@ -25,12 +24,19 @@ class PostViewHolder(itemView: View, adapter: PostsAdapter, var context: Context
     }
 
     fun bind(post: Post) {
-        titleTextView.text = post.title
+
+        if (post.title.length <= 50) {
+            titleTextView.text = post.title
+        } else {
+            titleTextView.text = post.title.substring(0..50) + "..."
+        }
+
         ownerTextView.text = post.uid
+
         if (post.body.length <= 75) {
             bodyTextView.text = post.body
         } else {
-            bodyTextView.text = post.body.subSequence(0..75)
+            bodyTextView.text = post.body.substring(0..75) + "..."
         }
         setCategoryImage(post)
     }
@@ -39,6 +45,7 @@ class PostViewHolder(itemView: View, adapter: PostsAdapter, var context: Context
 
         var color: Int = android.R.color.holo_red_light
         var drawable = android.R.drawable.stat_notify_error
+
         when (post.category.name) {
             "Books for Sale" -> {
                 color = R.color.colorBooksForSale
