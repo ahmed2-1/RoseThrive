@@ -22,15 +22,17 @@
             app:srcCompat="@mipmap/ic_launcher"
             android:contentDescription="TODO" />
 
+
         <TextView
             android:id="@+id/post_title_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toEndOf="@id/post_category_indicator"
-            android:text="DEFAULT TITLE"
+            android:text="DEFAULT TITLE djfsdklgjsldkgjslkgjslgjs"
             android:textSize="16sp"
             android:textColor="@android:color/black"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:layout_marginRight="75dp"/>
 
         <TextView
             android:id="@+id/post_owner_text_view"
